@@ -2,16 +2,24 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+### Install pnpm:
+
+On Windows in PowerShell:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+Invoke-WebRequest https://get.pnpm.io/install.ps1 -UseBasicParsing | Invoke-Expression
+```
+
+On Unix systems (macOS/Linux):
+
+```bash
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+```
+
+Then, run the development server:
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
