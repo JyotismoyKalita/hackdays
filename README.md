@@ -41,7 +41,6 @@ Install the recommended extensions if you are Using VSCode:
 - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 - [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
-- [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
 
 ### Contributing
 
