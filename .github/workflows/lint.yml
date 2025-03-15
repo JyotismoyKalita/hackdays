@@ -6,7 +6,7 @@ on:
             - main
 
 jobs:
-    test:
+    lint:
         runs-on: ubuntu-latest
         container:
             image: node:22
