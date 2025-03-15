@@ -1,6 +1,7 @@
 import HeroSection from '../components/HeroSection';
 import Featured1 from '@/components/Featured1';
 import FeaturedSec from '@/components/FeaturedSec';
+import Instructors from '@/components/Instructors';
 
 export default function Page() {
     return (
@@ -8,6 +9,7 @@ export default function Page() {
             <HeroSection />
             <Featured1 />
             <FeaturedSec />
+            <Instructors />
         </main>
     );
 }
