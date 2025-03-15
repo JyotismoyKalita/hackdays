@@ -16,6 +16,8 @@ On Unix systems (macOS/Linux):
 curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
+### Run locally
+
 Then, run the development server:
 
 ```bash
@@ -26,7 +28,34 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Dev Setup
+
+Install the recommended extensions if you are Using VSCode:
+
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+- [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma)
+
+### Contributing
+
+Fork the repository and clone it to your local machine. Create a new branch for your changes:
+
+```bash
+git checkout -b my-new-branch
+```
+
+Add upstream:
+
+```bash
+git remote add upstream https://github.com/zytact/hackdays.git
+```
+
+Before pushing your changes, pull the latest changes from upstream:
+
+```bash
+git pull upstream main
+```
 
 ## Learn More
 
