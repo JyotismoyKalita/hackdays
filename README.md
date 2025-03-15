@@ -18,6 +18,12 @@ curl -fsSL https://get.pnpm.io/install.sh | sh -
 
 ### Run locally
 
+Install packages:
+
+```bash
+pnpm install
+```
+
 Then, run the development server:
 
 ```bash
