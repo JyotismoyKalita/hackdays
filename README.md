@@ -57,6 +57,18 @@ Before pushing your changes, pull the latest changes from upstream:
 git pull upstream main
 ```
 
+and check for linting errors with the following command:
+
+```bash
+pnpm lint
+```
+
+make sure to format:
+
+```bash
+pnpm format
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
