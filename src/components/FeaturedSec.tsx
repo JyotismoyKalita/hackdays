@@ -1,10 +1,7 @@
-import { cn } from '@/lib/utils';
 import React from 'react';
 import { BentoGrid, BentoGridItem } from './ui/bento-grid';
 import {
     IconArrowWaveRightUp,
-    IconBoxAlignRightFilled,
-    IconBoxAlignTopLeft,
     IconClipboardCopy,
     IconFileBroken,
     IconSignature,
@@ -27,9 +24,7 @@ export function BentoGridDemo() {
         </BentoGrid>
     );
 }
-const Skeleton = () => (
-    <div className="flex flex-1 w-full h-full min-h-[6rem] rounded-xl bg-gradient-to-br from-neutral-200 dark:from-neutral-900 dark:to-neutral-800 to-neutral-100"></div>
-);
+
 const items = [
     {
         title: 'AI Recomended Stock Level',
