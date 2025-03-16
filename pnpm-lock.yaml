@@ -41,9 +41,12 @@ importers:
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.0(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(gel@2.0.1)
+<<<<<<< HEAD
       framer-motion:
         specifier: ^12.5.0
         version: 12.5.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+=======
+>>>>>>> 5da373f34d609f16b17969c5ff6a60b59e937554
       lucide-react:
         specifier: ^0.482.0
         version: 0.482.0(react@19.0.0)

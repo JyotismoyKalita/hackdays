@@ -33,7 +33,11 @@ const FaqSectionWithCategories = React.forwardRef<
     FaqSectionWithCategoriesProps
 >(({ className, title, description, items, contactInfo, ...props }, ref) => {
     return (
-        <section ref={ref} className={cn('py-16 w-full', className)} {...props}>
+        <section
+            ref={ref}
+            className={cn('py-16 w-full dark', className)}
+            {...props}
+        >
             <div className="container mx-auto px-4">
                 <div className="max-w-3xl mx-auto">
                     {/* Header */}
@@ -113,4 +117,4 @@ const FaqSectionWithCategories = React.forwardRef<
 });
 FaqSectionWithCategories.displayName = 'FaqSectionWithCategories';
 
-export { FaqSectionWithCategories };
+export default FaqSectionWithCategories;
