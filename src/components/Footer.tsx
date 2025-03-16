@@ -89,7 +89,7 @@ function Footer() {
                 </div>
             </div>
             <p className="text-center text-xs pt-8">
-                © 2024 InvenTrack. All rights reserved.
+                © 2025 InvenTrack. All rights reserved.
             </p>
         </footer>
     );
