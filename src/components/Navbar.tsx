@@ -34,16 +34,17 @@ function Navbar({ className }: { className?: string }) {
                     item="Our Services"
                 >
                     <div className="flex flex-col space-y-4 text-sm">
-                        <HoveredLink href="/courses">All courses</HoveredLink>
                         <HoveredLink href="/courses">
-                            Basic Music Theory
+                            Ai Powered Inventory
                         </HoveredLink>
                         <HoveredLink href="/courses">
-                            Advanced Composition
+                            Dyanamic Pricing
                         </HoveredLink>
-                        <HoveredLink href="/courses">SongWriting</HoveredLink>
                         <HoveredLink href="/courses">
-                            Music Production
+                            Sales Forecasting
+                        </HoveredLink>
+                        <HoveredLink href="/courses">
+                            Expiry Tracking
                         </HoveredLink>
                     </div>
                 </MenuItem>

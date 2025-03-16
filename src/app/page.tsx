@@ -3,6 +3,7 @@ import Featured1 from '@/components/Featured1';
 import FeaturedSec from '@/components/FeaturedSec';
 import Instructors from '@/components/Instructors';
 import Footer from '@/components/Footer';
+import Faq from '@/components/Faq';
 
 export default function Page() {
     return (
@@ -11,6 +12,7 @@ export default function Page() {
             <Featured1 />
             <FeaturedSec />
             <Instructors />
+            <Faq />
             <Footer />
         </main>
     );
