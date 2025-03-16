@@ -21,11 +21,7 @@ export default function Page() {
                 </h2>
                 <Globe />
             </div>
-            <Faq />
             <Featured1 />
-            <FeaturedSec />
-            <FeaturedSec />
-            <Instructors />
             <Faq />
             <Footer />
         </main>
