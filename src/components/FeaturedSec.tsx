@@ -9,9 +9,9 @@ import {
 } from '@tabler/icons-react';
 import Image from 'next/image';
 
-export function BentoGridDemo() {
+export function BentoGridDisplay() {
     return (
-        <BentoGrid className="max-w-4xl mt-10">
+        <BentoGrid className="max-w-4xl mt-10 dark">
             {items.map((item, i) => (
                 <BentoGridItem
                     key={i}
@@ -103,4 +103,4 @@ const items = [
         icon: <IconFileBroken className="h-4 w-4 text-neutral-500" />,
     },
 ];
-export default BentoGridDemo;
+export default BentoGridDisplay;
