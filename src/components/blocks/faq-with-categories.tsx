@@ -117,4 +117,4 @@ const FaqSectionWithCategories = React.forwardRef<
 });
 FaqSectionWithCategories.displayName = 'FaqSectionWithCategories';
 
-export { FaqSectionWithCategories };
+export default FaqSectionWithCategories;

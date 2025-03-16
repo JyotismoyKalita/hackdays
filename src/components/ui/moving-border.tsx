@@ -6,7 +6,7 @@ import {
     useMotionTemplate,
     useMotionValue,
     useTransform,
-} from 'motion/react';
+} from 'framer-motion';
 import { useRef } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -22,12 +22,18 @@ export function Button({
 }: {
     borderRadius?: string;
     children: React.ReactNode;
-    as?: React.ElementType;
+    as?: keyof React.JSX.IntrinsicElements;
     containerClassName?: string;
     borderClassName?: string;
     duration?: number;
     className?: string;
-    [key: string]: unknown;
+    [key: string]:
+        | string
+        | number
+        | boolean
+        | React.ReactNode
+        | keyof React.JSX.IntrinsicElements
+        | undefined;
 }) {
     return (
         <Component
@@ -80,7 +86,7 @@ export const MovingBorder = ({
     duration?: number;
     rx?: string;
     ry?: string;
-    [key: string]: unknown;
+    [key: string]: string | number | boolean | React.ReactNode | undefined;
 }) => {
     const pathRef = useRef<SVGRectElement>(null);
     const progress = useMotionValue<number>(0);

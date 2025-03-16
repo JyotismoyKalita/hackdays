@@ -1,6 +1,6 @@
 'use client';
 
-import { FaqSectionWithCategories } from '@/components/blocks/faq-with-categories';
+import FaqSectionWithCategories from '@/components/blocks/faq-with-categories';
 
 const DEMO_FAQS = [
     {
@@ -26,7 +26,7 @@ const DEMO_FAQS = [
     },
 ];
 
-export default function FaqSectionWithCategoriesDisplay() {
+export default function FaqSectionWithCategoriesDemo() {
     return (
         <FaqSectionWithCategories
             title="Frequently Asked Questions"
