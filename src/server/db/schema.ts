@@ -24,8 +24,8 @@ export const CompanyTable = pgTable('company', {
 export const ItemTable = pgTable('item', {
     id: uuid('id').primaryKey().defaultRandom(),
     model: varchar('model', { length: 255 }).notNull(),
-    expired: boolean('expired').notNull(),
-    expiryDate: date('expiryDate').notNull(),
+    hasExpiryDate: boolean('hasExpiryDate').notNull(),
+    expiryDate: date('expiryDate'),
     quantity: integer('quantity').notNull(),
     companyId: uuid('companyId')
         .references(() => CompanyTable.id)
