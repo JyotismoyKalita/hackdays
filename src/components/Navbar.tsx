@@ -3,10 +3,12 @@ import React, { useState } from 'react';
 import { HoveredLink, Menu, MenuItem } from './ui/navbar-menu';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { SignInButton, SignUpButton } from '@clerk/nextjs';
+import { UserButton, useUser } from '@clerk/nextjs';
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null);
+    const { isSignedIn } = useUser();
+
     return (
         <div
             className={cn(
@@ -57,12 +59,22 @@ function Navbar({ className }: { className?: string }) {
                         item="Contact Us"
                     ></MenuItem>
                 </Link>
-                <MenuItem setActive={setActive} active={active} item="Account">
-                    <div className="flex flex-col space-y-4 text-sm text-neutral-200">
-                        <SignUpButton />
-                        <SignInButton />
-                    </div>
-                </MenuItem>
+
+                {isSignedIn ? (
+                    <MenuItem
+                        setActive={setActive}
+                        active={active}
+                        item={<UserButton />}
+                    ></MenuItem>
+                ) : (
+                    <Link href={'/sign-in'}>
+                        <MenuItem
+                            setActive={setActive}
+                            active={active}
+                            item="Sign In"
+                        ></MenuItem>
+                    </Link>
+                )}
             </Menu>
         </div>
     );

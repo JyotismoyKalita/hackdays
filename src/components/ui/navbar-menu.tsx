@@ -21,11 +21,14 @@ export const MenuItem = ({
 }: {
     setActive: (item: string) => void;
     active: string | null;
-    item: string;
+    item: string | React.ReactNode;
     children?: React.ReactNode;
 }) => {
     return (
-        <div onMouseEnter={() => setActive(item)} className="relative ">
+        <div
+            onMouseEnter={() => setActive(typeof item === 'string' ? item : '')}
+            className="relative "
+        >
             <motion.p
                 transition={{ duration: 0.3 }}
                 className="cursor-pointer text-black hover:opacity-[0.9] dark:text-white"

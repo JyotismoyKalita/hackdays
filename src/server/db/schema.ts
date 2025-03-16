@@ -11,6 +11,7 @@ import {
 export const UserTable = pgTable('user', {
     id: text('id').primaryKey().notNull(),
     name: varchar('name', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull(),
 });
 
 export const CompanyTable = pgTable('company', {

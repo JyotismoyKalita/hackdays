@@ -30,8 +30,8 @@ export default function RootLayout({
             appearance={{
                 baseTheme: dark,
                 variables: {
-                    colorPrimary: '#134e4a',
-                    colorBackground: '#171717',
+                    colorPrimary: '#14b8a6',
+                    colorBackground: '#000000',
                 },
             }}
         >
