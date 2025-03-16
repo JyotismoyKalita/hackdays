@@ -3,9 +3,12 @@ import React, { useState } from 'react';
 import { HoveredLink, Menu, MenuItem } from './ui/navbar-menu';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { UserButton, useUser } from '@clerk/nextjs';
 
 function Navbar({ className }: { className?: string }) {
     const [active, setActive] = useState<string | null>(null);
+    const { isSignedIn } = useUser();
+
     return (
         <div
             className={cn(
@@ -35,7 +38,7 @@ function Navbar({ className }: { className?: string }) {
                 >
                     <div className="flex flex-col space-y-4 text-sm">
                         <HoveredLink href="/courses">
-                            Ai Powered Inventory
+                            AI Powered Inventory
                         </HoveredLink>
                         <HoveredLink href="/courses">
                             Dyanamic Pricing
@@ -56,13 +59,22 @@ function Navbar({ className }: { className?: string }) {
                         item="Contact Us"
                     ></MenuItem>
                 </Link>
-                <Link href={'/contact'}>
+
+                {isSignedIn ? (
                     <MenuItem
                         setActive={setActive}
                         active={active}
-                        item="Accounts"
+                        item={<UserButton />}
                     ></MenuItem>
-                </Link>
+                ) : (
+                    <Link href={'/sign-in'}>
+                        <MenuItem
+                            setActive={setActive}
+                            active={active}
+                            item="Sign In"
+                        ></MenuItem>
+                    </Link>
+                )}
             </Menu>
         </div>
     );

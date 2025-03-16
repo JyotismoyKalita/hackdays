@@ -64,6 +64,7 @@ export function Globe({
 
     const onRender = useCallback(
         (state: Partial<COBEOptions>) => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
             if (!pointerInteracting.current) phi += 0.005;
             state.phi = phi + r;
             state.width = width * 2;
@@ -91,6 +92,7 @@ export function Globe({
 
         setTimeout(() => (canvasRef.current!.style.opacity = '1'));
         return () => globe.destroy();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
