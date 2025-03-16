@@ -1,9 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-    images: {
-        domains: ['images.unsplash.com', 'res.cloudinary.com'],
-    },
+    
     images: {
         remotePatterns: [
             {
@@ -17,6 +15,13 @@ const nextConfig: NextConfig = {
                 hostname: 'api.microlink.io',
                 port: '',
                 pathname: '/**',
+            },
+            {   
+                protocol: 'https',
+                hostname: 'images.unsplash.com',
+                port: '',
+                pathname: '/**',
+
             },
         ],
     },
