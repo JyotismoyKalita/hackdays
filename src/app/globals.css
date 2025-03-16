@@ -114,18 +114,10 @@
 }
 
 @layer base {
-<<<<<<< HEAD
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-=======
-    * {
-        @apply border-border outline-ring/50;
-    }
-    body {
-        @apply bg-background text-foreground;
->>>>>>> 5da373f34d609f16b17969c5ff6a60b59e937554
-    }
+  }
 }
