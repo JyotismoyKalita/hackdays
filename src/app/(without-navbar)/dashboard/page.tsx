@@ -1,3 +1,4 @@
+'use client';
 import { AppSidebar } from '@/components/app-sidebar';
 import {
     Breadcrumb,
@@ -13,8 +14,22 @@ import {
     SidebarProvider,
     SidebarTrigger,
 } from '@/components/ui/sidebar';
+import { UserButton } from '@clerk/nextjs';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 export default function Page() {
+    useEffect(() => {
+        const createUser = async () => {
+            try {
+                await axios.post('/api/user');
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        };
+
+        createUser();
+    }, []);
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -38,6 +53,9 @@ export default function Page() {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
+                    <div className="ml-auto">
+                        <UserButton />
+                    </div>
                 </header>
                 <div className="flex flex-1 flex-col gap-4 p-4">
                     <div className="grid auto-rows-min gap-4 md:grid-cols-3">
