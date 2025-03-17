@@ -1,5 +1,5 @@
 'use client';
-import HeroSection from '../components/HeroSection';
+import HeroSection from '@/components/HeroSection';
 import Featured1 from '@/components/Featured1';
 import FeaturedSec from '@/components/FeaturedSec';
 import Instructors from '@/components/Instructors';
