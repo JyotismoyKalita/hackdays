@@ -1,3 +1,4 @@
+'use client';
 import { AppSidebar } from '@/components/app-sidebar';
 import {
     Breadcrumb,
@@ -14,8 +15,21 @@ import {
     SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { UserButton } from '@clerk/nextjs';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 export default function Page() {
+    useEffect(() => {
+        const createUser = async () => {
+            try {
+                await axios.post('/api/user');
+            } catch (error) {
+                console.error('Error creating user:', error);
+            }
+        };
+
+        createUser();
+    }, []);
     return (
         <SidebarProvider>
             <AppSidebar />
