@@ -1,6 +1,7 @@
+'use client';
 import * as React from 'react';
-import { GalleryVerticalEnd } from 'lucide-react';
 import { SearchForm } from '@/components/search-form';
+import { usePathname } from 'next/navigation';
 
 import {
     Sidebar,
@@ -15,9 +16,7 @@ import {
     SidebarRail,
 } from '@/components/ui/sidebar';
 
-// This is sample data.
 const data = {
-    versions: ['1.0.1', '1.1.0-alpha', '2.0.0-beta1'],
     navMain: [
         {
             title: 'Getting Started',
@@ -25,15 +24,15 @@ const data = {
             items: [
                 {
                     title: 'Overview',
-                    url: '#',
+                    url: '/dashboard/overview',
                 },
                 {
                     title: 'Inventory',
-                    url: '#',
+                    url: '/dashboard/inventory',
                 },
                 {
                     title: 'Sales and Purchases',
-                    url: '#',
+                    url: '/dashboard/sales-and-purchases',
                 },
             ],
         },
@@ -43,20 +42,19 @@ const data = {
             items: [
                 {
                     title: 'AI Stock Levels',
-                    url: '#',
+                    url: '/dashboard/ai-stock-levels',
                 },
                 {
-                    title: 'AI Recomendations',
-                    url: '#',
-                    isActive: true,
+                    title: 'AI Recommendations',
+                    url: '/dashboard/ai-recommendations',
                 },
                 {
                     title: 'AI Dynamic Pricing',
-                    url: '#',
+                    url: '/dashboard/ai-dynamic-pricing',
                 },
                 {
                     title: 'Expiry Tracker',
-                    url: '#',
+                    url: '/dashboard/expiry-tracker',
                 },
             ],
         },
@@ -66,7 +64,7 @@ const data = {
             items: [
                 {
                     title: 'Settings',
-                    url: '#',
+                    url: '/dashboard/settings',
                 },
             ],
         },
@@ -74,6 +72,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const pathname = usePathname();
     return (
         <Sidebar {...props}>
             <SidebarHeader>
@@ -81,9 +80,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenu>
                         <SidebarMenuItem>
                             <SidebarMenuButton size="lg">
-                                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                                    <GalleryVerticalEnd className="size-4" />
-                                </div>
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-medium">
                                         Dashboard
@@ -106,7 +102,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton
                                             asChild
-                                            isActive={item.isActive}
+                                            isActive={pathname === item.url}
                                         >
                                             <a href={item.url}>{item.title}</a>
                                         </SidebarMenuButton>
