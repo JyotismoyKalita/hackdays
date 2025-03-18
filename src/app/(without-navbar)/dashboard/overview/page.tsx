@@ -1,4 +1,3 @@
-import { Textarea } from '@/components/ui/textarea';
 import { Charts } from '@/components/Charts';
 
 export default function Home() {
@@ -20,10 +19,65 @@ export default function Home() {
                             Items
                         </h2>
                     </div>
-                    <Textarea
-                        className="w-full h-160 min-h-[500px] resize-none text-center p-4 text-lg font-medium bg-gray-900 border-gray-700 focus:border-gray-600 focus:ring-gray-600"
-                        placeholder="Enter your items here..."
-                    />
+                    <div className="w-full h-142 p-4 text-lg font-medium bg-gray-900 rounded-md border border-gray-700">
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-semibold text-teal-400">
+                                    Category 1
+                                </h3>
+                            </div>
+                            <div>
+                                <ul className="space-y-2">
+                                    <li className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                        <span className="text-gray-200">
+                                            Item 1
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                        <span className="text-gray-200">
+                                            Item 2
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                        <span className="text-gray-200">
+                                            Item 3
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div className="space-y-2">
+                                <h3 className="text-xl font-semibold text-teal-400">
+                                    Category 2
+                                </h3>
+                            </div>
+                            <div>
+                                <ul className="space-y-2">
+                                    <li className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                        <span className="text-gray-200">
+                                            Item 1
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                        <span className="text-gray-200">
+                                            Item 2
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center space-x-2">
+                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                        <span className="text-gray-200">
+                                            Item 3
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Right Side */}
@@ -37,10 +91,28 @@ export default function Home() {
                                 Top Selling Items
                             </h2>
                         </div>
-                        <Textarea
-                            className="w-full h-40 resize-none text-center p-4 text-lg font-medium bg-gray-900 border-gray-700 focus:border-gray-600 focus:ring-gray-600"
-                            placeholder="Enter your items here..."
-                        />
+                        <div className="w-full h-40 p-4 text-lg font-medium bg-gray-900 rounded-md border border-gray-700">
+                            <ul className="space-y-2">
+                                <li className="flex items-center space-x-2">
+                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                    <span className="text-gray-200">
+                                        Item 1
+                                    </span>
+                                </li>
+                                <li className="flex items-center space-x-2">
+                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                    <span className="text-gray-200">
+                                        Item 2
+                                    </span>
+                                </li>
+                                <li className="flex items-center space-x-2">
+                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                    <span className="text-gray-200">
+                                        Item 3
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </main>
