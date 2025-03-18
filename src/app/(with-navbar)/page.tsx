@@ -22,7 +22,7 @@ export default function Page() {
                 </h2>
                 <Globe />
             </div>
-            <Featured1 />
+
             <Faq />
             <Footer />
         </main>
