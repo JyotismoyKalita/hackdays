@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+'use client';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
 import { ClerkProvider, UserButton } from '@clerk/nextjs';
@@ -18,6 +18,7 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
+import { usePathname } from 'next/navigation';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -29,16 +30,26 @@ const geistMono = Geist_Mono({
     subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-    title: 'InvenTrack',
-    description: 'Smarter Inventory, Seamless Operations',
-};
-
 export default function RootLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const pathname = usePathname();
+
+    interface Map {
+        [key: string]: string;
+    }
+    const map: Map = {
+        '/dashboard/inventory': 'Inventory',
+        '/dashboard/overview': 'Overview',
+        '/dashboard/sales-and-purchases': 'Sales and Purchases',
+        '/dashboard/ai-stock-levels': 'AI Stock Levels',
+        '/dashboard/ai-recommendations': 'AI Recommendations',
+        '/dashboard/ai-dynamic-pricing': 'AI Dynamic Pricing',
+        '/dashboard/expiry-tracker': 'Expiry Tracker',
+        '/dashboard/settings': 'Settings',
+    };
     return (
         <ClerkProvider
             appearance={{
@@ -66,14 +77,14 @@ export default function RootLayout({
                                 <Breadcrumb>
                                     <BreadcrumbList>
                                         <BreadcrumbItem className="hidden md:block">
-                                            <BreadcrumbLink href="#">
+                                            <BreadcrumbLink href="/">
                                                 InvenTrack
                                             </BreadcrumbLink>
                                         </BreadcrumbItem>
                                         <BreadcrumbSeparator className="hidden md:block" />
                                         <BreadcrumbItem>
                                             <BreadcrumbPage>
-                                                Overview
+                                                {map[pathname] || 'Dashboard'}
                                             </BreadcrumbPage>
                                         </BreadcrumbItem>
                                     </BreadcrumbList>
