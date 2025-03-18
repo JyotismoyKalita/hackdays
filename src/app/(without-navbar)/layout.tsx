@@ -1,8 +1,7 @@
 'use client';
 import { Geist, Geist_Mono } from 'next/font/google';
 import '../globals.css';
-import { ClerkProvider, UserButton } from '@clerk/nextjs';
-import { dark } from '@clerk/themes';
+
 import {
     SidebarInset,
     SidebarProvider,
@@ -19,6 +18,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { usePathname } from 'next/navigation';
+import { UserButton } from '@clerk/nextjs';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -51,53 +51,43 @@ export default function RootLayout({
         '/dashboard/settings': 'Settings',
     };
     return (
-        <ClerkProvider
-            appearance={{
-                baseTheme: dark,
-                variables: {
-                    colorPrimary: '#14b8a6',
-                    colorBackground: '#000000',
-                },
-            }}
-        >
-            <html lang="en" className="dark">
-                <body
-                    className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-                >
-                    <div className="relative w-full flex items-center justify-center"></div>
-                    <SidebarProvider>
-                        <AppSidebar />
-                        <SidebarInset>
-                            <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-                                <SidebarTrigger className="-ml-1" />
-                                <Separator
-                                    orientation="vertical"
-                                    className="mr-2 data-[orientation=vertical]:h-4"
-                                />
-                                <Breadcrumb>
-                                    <BreadcrumbList>
-                                        <BreadcrumbItem className="hidden md:block">
-                                            <BreadcrumbLink href="/">
-                                                InvenTrack
-                                            </BreadcrumbLink>
-                                        </BreadcrumbItem>
-                                        <BreadcrumbSeparator className="hidden md:block" />
-                                        <BreadcrumbItem>
-                                            <BreadcrumbPage>
-                                                {map[pathname] || 'Dashboard'}
-                                            </BreadcrumbPage>
-                                        </BreadcrumbItem>
-                                    </BreadcrumbList>
-                                </Breadcrumb>
-                                <div className="ml-auto">
-                                    <UserButton />
-                                </div>
-                            </header>
-                            {children}
-                        </SidebarInset>
-                    </SidebarProvider>
-                </body>
-            </html>
-        </ClerkProvider>
+        <html lang="en" className="dark">
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+                <div className="relative w-full flex items-center justify-center"></div>
+                <SidebarProvider>
+                    <AppSidebar />
+                    <SidebarInset>
+                        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                            <SidebarTrigger className="-ml-1" />
+                            <Separator
+                                orientation="vertical"
+                                className="mr-2 data-[orientation=vertical]:h-4"
+                            />
+                            <Breadcrumb>
+                                <BreadcrumbList>
+                                    <BreadcrumbItem className="hidden md:block">
+                                        <BreadcrumbLink href="/">
+                                            InvenTrack
+                                        </BreadcrumbLink>
+                                    </BreadcrumbItem>
+                                    <BreadcrumbSeparator className="hidden md:block" />
+                                    <BreadcrumbItem>
+                                        <BreadcrumbPage>
+                                            {map[pathname] || 'Dashboard'}
+                                        </BreadcrumbPage>
+                                    </BreadcrumbItem>
+                                </BreadcrumbList>
+                            </Breadcrumb>
+                            <div className="ml-auto">
+                                <UserButton />
+                            </div>
+                        </header>
+                        {children}
+                    </SidebarInset>
+                </SidebarProvider>
+            </body>
+        </html>
     );
 }
