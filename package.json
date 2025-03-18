@@ -38,6 +38,7 @@
         "next": "15.2.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "recharts": "^2.15.1",
         "simplex-noise": "^4.0.3",
         "tailwind-merge": "^3.0.2",
         "tailwindcss-animate": "^1.0.7",
@@ -67,5 +68,8 @@
             "esbuild",
             "sharp"
         ]
+    },
+    "overrides": {
+        "react-is": "^19.0.0-rc-69d4b800-20241021"
     }
 }
