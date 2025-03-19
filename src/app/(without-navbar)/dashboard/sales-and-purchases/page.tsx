@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
+// import { div } from '@/components/ui/div';
 import { Table } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 
@@ -156,10 +156,10 @@ export default function SalesPurchases() {
     );
 
     return (
-        <div className="grid grid-cols-2 gap-6 p-6">
+        <div className="grid grid-cols-2 gap-6 p-6 max-h-175">
             {/* Sales Section */}
-            <Card className="p-4">
-                <h2 className="text-xl font-bold mb-6">Sales</h2>
+            <div className="p-4 max-h-175 overflow-y-scroll outline-2 rounded-2xl">
+                <h2 className="text-xl font-bold mb-6  text-teal-600">Sales</h2>
                 <div className="flex items-center gap-4 mb-6">
                     <span>From:</span>
                     <Input
@@ -209,11 +209,13 @@ export default function SalesPurchases() {
                         </Table>
                     </div>
                 ))}
-            </Card>
+            </div>
 
             {/* Purchases Section */}
-            <Card className="p-4">
-                <h2 className="text-xl font-bold mb-6">Purchases</h2>
+            <div className="p-4 max-h-175 overflow-y-scroll outline-2 rounded-2xl">
+                <h2 className="text-xl font-bold mb-6  text-teal-600">
+                    Purchases
+                </h2>
                 <div className="flex items-center gap-4 mb-6">
                     <span>From:</span>
                     <Input
@@ -242,6 +244,7 @@ export default function SalesPurchases() {
                                     <th className="border p-2">Qty</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 {category.items.map((item) => (
                                     <tr key={item.id}>
@@ -263,14 +266,12 @@ export default function SalesPurchases() {
                         </Table>
                     </div>
                 ))}
-            </Card>
+            </div>
             <div className="col-span-2 flex justify-evenly gap-30 mt-6">
-                <Card className="p-4 font-bold">
-                    Total Sales: ${totalSales}
-                </Card>
-                <Card className="p-4 font-bold">
+                <div className="p-4 font-bold">Total Sales: ${totalSales}</div>
+                <div className="p-4 font-bold">
                     Total Purchases: ${totalPurchases}
-                </Card>
+                </div>
             </div>
         </div>
     );

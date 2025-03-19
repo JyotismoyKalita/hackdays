@@ -16,9 +16,9 @@ const stockLevels = [
 
 export function TableDemo() {
     return (
-        <div className="flex justify-between gap-6 max-w-6xl w-full mx-auto">
+        <div className="flex justify-between gap-6 max-w-6xl w-full mx-auto overflow-hidden">
             {/* Table 1 - AI Recommended Products */}
-            <div className="border border-gray-300 rounded-xl overflow-hidden shadow-md w-1/2">
+            <div className="border border-gray-300 rounded-xl overflow-y-scroll shadow-md w-1/2">
                 <h2 className="text-2xl font-bold text-center my-4">
                     AI Recommended Products
                 </h2>
@@ -26,10 +26,10 @@ export function TableDemo() {
                     <TableBody>
                         {stockLevels.map((category) => (
                             <React.Fragment key={category.category}>
-                                <TableRow className="bg-gray-800 text-white">
+                                <TableRow className="bg-gray-800">
                                     <TableCell
                                         colSpan={2}
-                                        className="font-bold text-xl py-3"
+                                        className="font-bold text-xl py-3 text-teal-600"
                                     >
                                         {category.category}
                                     </TableCell>
@@ -52,7 +52,7 @@ export function TableDemo() {
             </div>
 
             {/* Table 2 - AI Recommended Discontinuations */}
-            <div className="border border-gray-300 rounded-xl overflow-hidden shadow-md w-1/2">
+            <div className="border border-gray-300 rounded-xl overflow-y-scroll shadow-md w-1/2">
                 <h2 className="text-2xl font-bold text-center my-4">
                     AI Recommended Discontinuations
                 </h2>
@@ -60,10 +60,10 @@ export function TableDemo() {
                     <TableBody>
                         {stockLevels.map((category) => (
                             <React.Fragment key={category.category}>
-                                <TableRow className="bg-gray-800 text-white">
+                                <TableRow className="bg-gray-800">
                                     <TableCell
                                         colSpan={3}
-                                        className="font-bold text-xl py-3"
+                                        className="font-bold text-xl py-3 text-teal-600"
                                     >
                                         {category.category}
                                     </TableCell>

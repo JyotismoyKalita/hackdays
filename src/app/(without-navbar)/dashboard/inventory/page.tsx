@@ -44,21 +44,23 @@ export default function Inventory() {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen w-full bg-black text-white p-4">
-            <div className="w-full max-w-screen-xl p-6 rounded-lg shadow-lg border border-gray-700 bg-gray-900 flex flex-col">
-                <h2 className="text-3xl font-bold text-center mb-6 text-teal-400">
+        <div className="flex w-full h-full bg-black text-white p-4">
+            <div className="w-full max-w-screen-xl p-6  shadow-lg   bg-black-900 flex flex-col">
+                <h2 className="text-3xl font-bold text-center mb-6 text-teal-600">
                     Inventory
                 </h2>
 
                 <div className="flex flex-col lg:flex-row gap-6 w-full">
                     {/* Items List */}
-                    <div className="border p-6 rounded-lg bg-gray-800 flex-1 w-full h-full overflow-auto">
+                    <div className="border p-6 rounded-lg bg-gray-800 flex-1 w-full h-full min-h-102.5 overflow-auto">
                         <h3 className="text-xl font-semibold mb-4">Items</h3>
                         <div className="w-full overflow-x-auto">
                             <table className="w-full text-left border-collapse">
                                 <thead>
                                     <tr className="border-b border-gray-600">
-                                        <th className="p-3">Category</th>
+                                        <th className="p-3 text-teal-600">
+                                            Category
+                                        </th>
                                         <th className="p-3">Item</th>
                                         <th className="p-3">Stock</th>
                                         <th className="p-3">Actions</th>
@@ -70,7 +72,7 @@ export default function Inventory() {
                                             key={index}
                                             className="border-b border-gray-700"
                                         >
-                                            <td className="p-3">
+                                            <td className="p-3 text-teal-600">
                                                 {item.category}
                                             </td>
                                             <td className="p-3">{item.name}</td>
@@ -124,7 +126,7 @@ export default function Inventory() {
                     </div>
 
                     {/* Add New Item Form */}
-                    <div className="border p-6 rounded-lg bg-gray-800 flex-1 w-full h-full">
+                    <div className="border p-6 rounded-lg bg-gray-800 flex-1 max-w-100 h-full">
                         <h3 className="text-xl font-semibold mb-4">
                             Entry of New Item
                         </h3>
@@ -140,6 +142,30 @@ export default function Inventory() {
                         <Input
                             type="text"
                             placeholder="Category"
+                            value={newItem.category}
+                            onChange={(e) =>
+                                setNewItem({
+                                    ...newItem,
+                                    category: e.target.value,
+                                })
+                            }
+                            className="mt-3 w-full"
+                        />
+                        <Input
+                            type="text"
+                            placeholder="Price"
+                            value={newItem.category}
+                            onChange={(e) =>
+                                setNewItem({
+                                    ...newItem,
+                                    category: e.target.value,
+                                })
+                            }
+                            className="mt-3 w-full"
+                        />
+                        <Input
+                            type="text"
+                            placeholder="Cost Price"
                             value={newItem.category}
                             onChange={(e) =>
                                 setNewItem({
@@ -176,31 +202,40 @@ export default function Inventory() {
                             </label>
                         </div>
                         {hasExpiry && (
-                            <div className="mt-3 flex gap-2">
-                                <Input
-                                    type="date"
-                                    value={dates.manufacturing}
-                                    onChange={(e) =>
-                                        setDates({
-                                            ...dates,
-                                            manufacturing: e.target.value,
-                                        })
-                                    }
-                                    className="mt-2 w-1/2"
-                                    placeholder="Manufacturing Date"
-                                />
-                                <Input
-                                    type="date"
-                                    value={dates.expiry}
-                                    onChange={(e) =>
-                                        setDates({
-                                            ...dates,
-                                            expiry: e.target.value,
-                                        })
-                                    }
-                                    className="mt-2 w-1/2"
-                                    placeholder="Expiry Date"
-                                />
+                            <div className="mt-3">
+                                <div className="flex flex-col gap-4">
+                                    <div className="flex items-center gap-4">
+                                        <span className="w-16">From:</span>
+                                        <Input
+                                            type="date"
+                                            value={dates.manufacturing}
+                                            onChange={(e) =>
+                                                setDates({
+                                                    ...dates,
+                                                    manufacturing:
+                                                        e.target.value,
+                                                })
+                                            }
+                                            className="flex-1"
+                                            placeholder="Manufacturing Date"
+                                        />
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="w-16">To:</span>
+                                        <Input
+                                            type="date"
+                                            value={dates.expiry}
+                                            onChange={(e) =>
+                                                setDates({
+                                                    ...dates,
+                                                    expiry: e.target.value,
+                                                })
+                                            }
+                                            className="flex-1"
+                                            placeholder="Expiry Date"
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         )}
                         <Button

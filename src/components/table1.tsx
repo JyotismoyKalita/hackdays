@@ -68,8 +68,8 @@ const stockLevels = [
 
 export function TableDemo() {
     return (
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md max-w-6xl w-full mx-auto">
-            <Table className="w-full border-collapse">
+        <div className="border border-gray-300 rounded-lg overflow-y-scroll shadow-md max-w-6xl w-full mx-auto">
+            <Table className="w-full border-collapse max-h-175 overflow-y-scroll">
                 <TableCaption>AI Stock Levels</TableCaption>
 
                 {/* Dark Table Header */}
@@ -98,10 +98,10 @@ export function TableDemo() {
                     {stockLevels.map((category) => (
                         <React.Fragment key={category.category}>
                             {/* Dark Category Row */}
-                            <TableRow className="bg-gray-800 text-white">
+                            <TableRow className="bg-gray-800">
                                 <TableCell
                                     colSpan={5}
-                                    className="font-bold text-xl py-3"
+                                    className="font-bold text-xl py-3 text-teal-600"
                                 >
                                     {category.category}
                                 </TableCell>
