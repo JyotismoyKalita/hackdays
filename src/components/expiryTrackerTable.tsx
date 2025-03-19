@@ -94,7 +94,7 @@ const stockLevels = [
 
 export function TableDemo() {
     return (
-        <div className="border border-gray-300 rounded-lg overflow-hidden shadow-md max-w-6xl w-full mx-auto">
+        <div className="border border-gray-300 rounded-lg overflow-y-scroll shadow-md max-w-6xl max-h-300 w-full mx-auto">
             <Table className="w-full border-collapse">
                 <TableCaption>Expiry Tracker Table</TableCaption>
 
