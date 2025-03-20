@@ -60,6 +60,14 @@ function Navbar({ className }: { className?: string }) {
                     ></MenuItem>
                 </Link>
 
+                <Link href={'/dashboard/overview'}>
+                    <MenuItem
+                        setActive={setActive}
+                        active={active}
+                        item="Dashboard"
+                    ></MenuItem>
+                </Link>
+
                 {isSignedIn ? (
                     <MenuItem
                         setActive={setActive}
