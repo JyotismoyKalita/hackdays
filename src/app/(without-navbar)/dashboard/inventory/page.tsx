@@ -22,28 +22,50 @@ export default function Inventory() {
     const [hasExpiry, setHasExpiry] = useState(false);
     const [dates, setDates] = useState({ manufacturing: '', expiry: '' });
 
-    const addItem = () => {
+    const addItem = async () => {
         if (newItem.name && newItem.category && newItem.stock) {
-            const item = {
+            const itemForApi = {
                 name: newItem.name,
                 category: newItem.category,
                 quantity: parseInt(newItem.stock),
-                price: parseFloat(newItem.price),
-                costPrice: parseFloat(newItem.costPrice),
+                price: parseFloat(newItem.price) || 0,
+                costPrice: parseFloat(newItem.costPrice) || 0,
                 manufacturingDate: hasExpiry ? dates.manufacturing : '',
                 expiryDate: hasExpiry ? dates.expiry : '',
                 hasExpiry: hasExpiry,
             };
 
-            axios.post('/api/items/add', item);
+            try {
+                await axios.post('/api/items/add', itemForApi);
 
-            setNewItem({
-                name: '',
-                category: '',
-                stock: '',
-                price: '',
-                costPrice: '',
-            });
+                // Add the new item to the local state with the correct property name
+                setItems([
+                    ...items,
+                    {
+                        name: newItem.name,
+                        category: newItem.category,
+                        stock: parseInt(newItem.stock),
+                    },
+                ]);
+
+                // Clear the form
+                setNewItem({
+                    name: '',
+                    category: '',
+                    stock: '',
+                    price: '',
+                    costPrice: '',
+                });
+
+                // Reset expiry dates if needed
+                if (hasExpiry) {
+                    setDates({ manufacturing: '', expiry: '' });
+                    setHasExpiry(false);
+                }
+            } catch (error) {
+                console.error('Failed to add item:', error);
+                // You could add user feedback for errors here
+            }
         }
     };
 
