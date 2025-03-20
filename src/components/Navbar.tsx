@@ -37,16 +37,16 @@ function Navbar({ className }: { className?: string }) {
                     item="Our Services"
                 >
                     <div className="flex flex-col space-y-4 text-sm">
-                        <HoveredLink href="/courses">
+                        <HoveredLink href="/dashboard/ai-recommendations">
                             AI Powered Inventory
                         </HoveredLink>
-                        <HoveredLink href="/courses">
-                            Dyanamic Pricing
+                        <HoveredLink href="/dashboard/ai-dynamic-pricing">
+                            Dynamic Pricing
                         </HoveredLink>
-                        <HoveredLink href="/courses">
-                            Sales Forecasting
+                        <HoveredLink href="/dashboard/ai-stock-levels">
+                            AI Stock Levels
                         </HoveredLink>
-                        <HoveredLink href="/courses">
+                        <HoveredLink href="/dashboard/expiry-tracker">
                             Expiry Tracking
                         </HoveredLink>
                     </div>

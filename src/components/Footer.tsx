@@ -7,7 +7,7 @@ function Footer() {
                         About Us
                     </h2>
                     <p className="mb-4">
-                        we provide smart and efficient inventory stock
+                        We provide smart and efficient inventory stock
                         management solutions to help businesses track, manage,
                         and optimize their stock seamlessly. Our goal is to
                         ensure accuracy, reduce waste, and improve efficiency
@@ -84,7 +84,7 @@ function Footer() {
                     </h2>
                     <p>Assam, India</p>
                     <p>Assam 10001</p>
-                    <p>Email: info@musicschool.com</p>
+                    <p>Email: info@inventrack.com</p>
                     <p>Phone: (123) 456-7890</p>
                 </div>
             </div>
