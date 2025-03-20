@@ -1,4 +1,4 @@
-//for expiry tracker
+'use client';
 import React from 'react';
 import {
     Table,
@@ -9,90 +9,66 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { getAll } from '@/lib/getAll';
+import { useQuery } from '@tanstack/react-query';
 
-const stockLevels = [
-    {
-        name: 'Item 1',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 1,
-    },
-    {
-        name: 'Item 2',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 4,
-    },
-    {
-        name: 'Item 3',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 7,
-    },
-    {
-        name: 'Item 4',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 14,
-    },
-    {
-        name: 'Item 5',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 60,
-    },
-    {
-        name: 'Item 6',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 90,
-    },
-    {
-        name: 'Item 7',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 90,
-    },
-    {
-        name: 'Item 8',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 90,
-    },
-    {
-        name: 'Item 9',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 90,
-    },
-    {
-        name: 'Item 10',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 90,
-    },
-    {
-        name: 'Item 11',
-        category: 'Category',
-        manufacturingDate: '35/45/34',
-        expiryDate: '34/46/23',
-        willExpireIn: 90,
-    },
+// Define interface for expiry tracking items
+interface ExpiryTrackingItem {
+    id: number;
+    name: string;
+    category: string;
+    categoryId: number;
+    manufacturingDate: string;
+    expiryDate: string;
+    hasExpiry: boolean;
+    quantity: number;
+    price: number;
+    costPrice: number;
+    userId: string;
+    addedAt: string;
+}
 
-    //
-];
+// Helper function to calculate days remaining until expiry
+const calculateDaysRemaining = (expiryDateStr: string): number => {
+    const expiryDate = new Date(expiryDateStr);
+    const today = new Date();
+    const diffTime = expiryDate.getTime() - today.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
+// Helper function to format dates
+const formatDate = (dateStr: string): string => {
+    return new Date(dateStr).toLocaleDateString();
+};
 
 export function TableDemo() {
+    const {
+        data: allData,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['allData'],
+        queryFn: async () => {
+            const response = await getAll();
+            return response;
+        },
+    });
+
+    const expiryTracking =
+        (allData?.get('expiryTracking') as ExpiryTrackingItem[]) || [];
+
+    if (isLoading) {
+        return <div className="text-center py-8">Loading data...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-8 text-red-500">
+                Error loading data
+            </div>
+        );
+    }
+
     return (
         <div className="border border-gray-300 rounded-lg overflow-y-scroll shadow-md max-w-6xl max-h-300 w-full mx-auto ">
             <Table className="w-full border-collapse">
@@ -113,26 +89,51 @@ export function TableDemo() {
                             Expiry Date
                         </TableHead>
                         <TableHead className="text-white text-lg">
-                            Will Expire in
+                            Will Expire in (days)
                         </TableHead>
                     </TableRow>
                 </TableHeader>
 
                 <TableBody>
-                    {stockLevels.map((item, index) => (
-                        <TableRow
-                            key={index}
-                            className={`border-t text-lg ${index < 3 ? 'bg-red-900 text-white' : ''}`}
-                        >
-                            <TableCell className="font-medium">
-                                • {item.name}
+                    {expiryTracking.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={5} className="text-center py-4">
+                                No items with expiry dates found
                             </TableCell>
-                            <TableCell>{item.category}</TableCell>
-                            <TableCell>{item.manufacturingDate}</TableCell>
-                            <TableCell>{item.expiryDate}</TableCell>
-                            <TableCell>{item.willExpireIn}</TableCell>
                         </TableRow>
-                    ))}
+                    ) : (
+                        expiryTracking.map((item) => {
+                            const daysRemaining = calculateDaysRemaining(
+                                item.expiryDate
+                            );
+                            return (
+                                <TableRow
+                                    key={item.id}
+                                    className={`border-t text-lg ${
+                                        daysRemaining <= 7
+                                            ? 'bg-red-900 text-white'
+                                            : daysRemaining <= 14
+                                              ? 'bg-orange-100'
+                                              : daysRemaining <= 30
+                                                ? 'bg-yellow-50'
+                                                : ''
+                                    }`}
+                                >
+                                    <TableCell className="font-medium">
+                                        • {item.name}
+                                    </TableCell>
+                                    <TableCell>{item.category}</TableCell>
+                                    <TableCell>
+                                        {formatDate(item.manufacturingDate)}
+                                    </TableCell>
+                                    <TableCell>
+                                        {formatDate(item.expiryDate)}
+                                    </TableCell>
+                                    <TableCell>{daysRemaining}</TableCell>
+                                </TableRow>
+                            );
+                        })
+                    )}
                 </TableBody>
             </Table>
         </div>
