@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import axios from 'axios';
 
 export default function Inventory() {
     const [items, setItems] = useState([
@@ -15,17 +16,34 @@ export default function Inventory() {
         name: '',
         category: '',
         stock: '',
+        price: '',
+        costPrice: '',
     });
     const [hasExpiry, setHasExpiry] = useState(false);
     const [dates, setDates] = useState({ manufacturing: '', expiry: '' });
 
     const addItem = () => {
         if (newItem.name && newItem.category && newItem.stock) {
-            setItems([
-                ...items,
-                { ...newItem, stock: parseInt(newItem.stock) },
-            ]);
-            setNewItem({ name: '', category: '', stock: '' });
+            const item = {
+                name: newItem.name,
+                category: newItem.category,
+                quantity: parseInt(newItem.stock),
+                price: parseFloat(newItem.price),
+                costPrice: parseFloat(newItem.costPrice),
+                manufacturingDate: hasExpiry ? dates.manufacturing : '',
+                expiryDate: hasExpiry ? dates.expiry : '',
+                hasExpiry: hasExpiry,
+            };
+
+            axios.post('/api/items/add', item);
+
+            setNewItem({
+                name: '',
+                category: '',
+                stock: '',
+                price: '',
+                costPrice: '',
+            });
         }
     };
 
@@ -154,11 +172,11 @@ export default function Inventory() {
                         <Input
                             type="text"
                             placeholder="Price"
-                            value={newItem.category}
+                            value={newItem.price}
                             onChange={(e) =>
                                 setNewItem({
                                     ...newItem,
-                                    category: e.target.value,
+                                    price: e.target.value,
                                 })
                             }
                             className="mt-3 w-full"
@@ -166,11 +184,11 @@ export default function Inventory() {
                         <Input
                             type="text"
                             placeholder="Cost Price"
-                            value={newItem.category}
+                            value={newItem.costPrice}
                             onChange={(e) =>
                                 setNewItem({
                                     ...newItem,
-                                    category: e.target.value,
+                                    costPrice: e.target.value,
                                 })
                             }
                             className="mt-3 w-full"
