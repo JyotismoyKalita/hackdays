@@ -50,11 +50,16 @@ export function Quote() {
                                         </li>
                                         <li className="flex items-center">
                                             <span className="w-2 h-2 bg-teal-600 rounded-full mr-2"></span>
-                                            AI Recommended Safety Stock Level
+                                            AI Recommended Discontinuation of a
+                                            particular item
                                         </li>
                                         <li className="flex items-center">
                                             <span className="w-2 h-2 bg-teal-600 rounded-full mr-2"></span>
-                                            AI Recommended Order Quantity
+                                            AI Recommended Dynamic Pricing
+                                        </li>
+                                        <li className="flex items-center">
+                                            <span className="w-2 h-2 bg-teal-600 rounded-full mr-2"></span>
+                                            Expiry Tracker
                                         </li>
                                     </ul>
                                 </div>
