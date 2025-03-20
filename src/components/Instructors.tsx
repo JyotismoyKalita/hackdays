@@ -7,31 +7,31 @@ const instructors = [
         id: 1,
         name: 'Sanjib Das',
         designation: 'GU-IT',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        image: 'https://t32a2y5k3v.ufs.sh/f/OUOWSzRtzb8n3xXUyGEX8KUPvVxal0qCjzYAN6cfLipksrt1',
     },
     {
         id: 5,
         name: 'Jyotismoy Kalita',
         designation: 'GU-IT',
-        image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGF2YXRhcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60',
+        image: 'https://t32a2y5k3v.ufs.sh/f/OUOWSzRtzb8npS8GVIE2f873oz4uAcFVJOCnybXaqYvrHPxZ',
     },
     {
         id: 2,
         name: 'Bhargav Das',
         designation: 'GU-IT',
-        image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=3540&q=80',
+        image: 'https://t32a2y5k3v.ufs.sh/f/OUOWSzRtzb8nz9CI3UAgLnESFHM1y8Op0td5vwZIs6bAakN2',
     },
     {
         id: 3,
         name: 'Arnab Chakraborty',
         designation: 'GU-IT',
-        image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60',
+        image: 'https://t32a2y5k3v.ufs.sh/f/OUOWSzRtzb8njGk1MSmdEzudUkDcNv1i8qr3HLYgmZtsbF5P',
     },
     {
         id: 4,
         name: 'Gourab Adhikari',
         designation: 'GU-IT',
-        image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YXZhdGFyfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60',
+        image: 'https://t32a2y5k3v.ufs.sh/f/OUOWSzRtzb8nn6sAuZjqYefK4srzhIW8EiUMo7pvBxkugZta',
     },
 ];
 
