@@ -1,4 +1,4 @@
-//ai stock level
+'use client';
 import React from 'react';
 
 import {
@@ -11,62 +11,64 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-const stockLevels = [
-    {
-        category: 'Category 1',
-        items: [
-            {
-                name: 'Item 1',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 2',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 3',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-        ],
-    },
-    {
-        category: 'Category 2',
-        items: [
-            {
-                name: 'Item 1',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 2',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 3',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-        ],
-    },
-];
+import { getAll } from '@/lib/getAll';
+import { useQuery } from '@tanstack/react-query';
+
+// Define interfaces for the data structure
+interface StockItem {
+    Item: string;
+    CurrentStock: number;
+    MaxStock: number;
+    MinStock: number;
+    Reorder: number;
+}
+
+interface AIStockLevels {
+    [category: string]: StockItem[];
+}
+
+// Example data replaced with the actual structure from console log
 
 export function TableDemo() {
+    const {
+        data: allData,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['allData'],
+        queryFn: async () => {
+            const response = await getAll();
+            return response;
+        },
+    });
+
+    const aiRecommendedStockLevels: AIStockLevels | undefined =
+        allData?.get('aiStockLevels');
+
+    if (isLoading) {
+        return <div className="text-center py-4">Loading stock levels...</div>;
+    }
+
+    if (error) {
+        return (
+            <div className="text-center py-4 text-red-500">
+                Error loading data
+            </div>
+        );
+    }
+
+    if (!aiRecommendedStockLevels) {
+        return <div className="text-center py-4">No stock data available</div>;
+    }
+
+    // Convert the object structure to an array format for rendering
+    const categoryData = Object.entries(aiRecommendedStockLevels).map(
+        ([category, items]) => ({
+            category,
+            items,
+        })
+    );
+
     return (
         <div className="border border-gray-300 rounded-lg overflow-y-scroll shadow-md max-w-6xl w-full mx-auto">
             <Table className="w-full border-collapse max-h-175 overflow-y-scroll">
@@ -95,8 +97,8 @@ export function TableDemo() {
 
                 {/* Table Body with Dark Category Headers */}
                 <TableBody>
-                    {stockLevels.map((category) => (
-                        <React.Fragment key={category.category}>
+                    {categoryData.map((category, categoryIndex) => (
+                        <React.Fragment key={categoryIndex}>
                             {/* Dark Category Row */}
                             <TableRow className="bg-gray-800">
                                 <TableCell
@@ -114,12 +116,12 @@ export function TableDemo() {
                                     className="border-t text-lg"
                                 >
                                     <TableCell className="font-medium">
-                                        • {item.name}
+                                        • {item.Item}
                                     </TableCell>
-                                    <TableCell>{item.currentStock}</TableCell>
-                                    <TableCell>{item.maxStock}</TableCell>
-                                    <TableCell>{item.minStock}</TableCell>
-                                    <TableCell>{item.reorder}</TableCell>
+                                    <TableCell>{item.CurrentStock}</TableCell>
+                                    <TableCell>{item.MaxStock}</TableCell>
+                                    <TableCell>{item.MinStock}</TableCell>
+                                    <TableCell>{item.Reorder}</TableCell>
                                 </TableRow>
                             ))}
                         </React.Fragment>
