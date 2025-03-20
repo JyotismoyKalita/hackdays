@@ -9,6 +9,7 @@ export const useGetAll = () => {
             const response = await getAll();
             return response;
         },
+        staleTime: 1000 * 60 * 1, // 1 minutes
         refetchOnMount: false,
         refetchOnWindowFocus: false,
     });

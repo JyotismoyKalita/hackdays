@@ -1,8 +1,9 @@
 'use client';
 import { Charts } from '@/components/Charts';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useGetAllItems } from '@/hooks/useGetAllItems';
 
 export default function Home() {
     useEffect(() => {
@@ -29,20 +30,29 @@ export default function Home() {
         topItemsSold: number;
     }
 
-    const {
-        data: items = [],
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['items'],
-        queryFn: async () => {
-            const response = await axios.get('/api/items/getAll');
-            return response.data;
-        },
-    });
+    const { data: items = [], isLoading, error } = useGetAllItems();
+    const [cachedItems, setCachedItems] = useState<ItemData[]>([]);
+
+    useEffect(() => {
+        // Load cached items from sessionStorage when component mounts
+        const storedItems = sessionStorage.getItem('inventoryItems');
+        if (storedItems) {
+            setCachedItems(JSON.parse(storedItems));
+        }
+
+        // Store new items in sessionStorage when they're fetched
+        if (items.length > 0 && !isLoading) {
+            sessionStorage.setItem('inventoryItems', JSON.stringify(items));
+            setCachedItems(items);
+        }
+    }, [items, isLoading]);
+
+    // Use cached items or fetched items
+    const displayItems =
+        isLoading && cachedItems.length > 0 ? cachedItems : items;
 
     const uniqueCategories: string[] = Array.from(
-        new Set(items.map((item: ItemData) => item.category))
+        new Set(displayItems.map((item: ItemData) => item.category))
     );
 
     const {
@@ -56,6 +66,34 @@ export default function Home() {
             return response.data;
         },
     });
+
+    // For top selling items
+    const [cachedTopSellingItems, setCachedTopSellingItems] = useState<
+        topSellingItem[]
+    >([]);
+
+    useEffect(() => {
+        // Load cached top selling items from sessionStorage
+        const storedTopItems = sessionStorage.getItem('topSellingItems');
+        if (storedTopItems) {
+            setCachedTopSellingItems(JSON.parse(storedTopItems));
+        }
+
+        // Store new top selling items in sessionStorage when fetched
+        if (topSellingItems.length > 0 && !isLoadingTopSelling) {
+            sessionStorage.setItem(
+                'topSellingItems',
+                JSON.stringify(topSellingItems)
+            );
+            setCachedTopSellingItems(topSellingItems);
+        }
+    }, [topSellingItems, isLoadingTopSelling]);
+
+    // Use cached top selling items or fetched items
+    const displayTopSellingItems =
+        isLoadingTopSelling && cachedTopSellingItems.length > 0
+            ? cachedTopSellingItems
+            : topSellingItems;
 
     return (
         <div className="flex flex-col h-screen p-4 bg-black">
@@ -76,7 +114,7 @@ export default function Home() {
                         </h2>
                     </div>
                     <div className="w-full h-142 p-4 text-lg font-medium bg-black-900 ">
-                        {isLoading ? (
+                        {isLoading && cachedItems.length === 0 ? (
                             <div className="text-center py-4">Loading...</div>
                         ) : error ? (
                             <div className="text-center py-4 text-red-500">
@@ -93,7 +131,7 @@ export default function Home() {
                                         </div>
                                         <div>
                                             <ul className="space-y-2">
-                                                {items
+                                                {displayItems
                                                     .filter(
                                                         (item: ItemData) =>
                                                             item.category ===
@@ -136,7 +174,8 @@ export default function Home() {
                             </h2>
                         </div>
                         <div className="w-full h-40 p-4 text-lg font-medium bg-black-900 rounded-md border border-gray-700 max-h-175 overflow-y-scroll">
-                            {isLoadingTopSelling ? (
+                            {isLoadingTopSelling &&
+                            cachedTopSellingItems.length === 0 ? (
                                 <div className="text-center py-4">
                                     Loading...
                                 </div>
@@ -144,13 +183,13 @@ export default function Home() {
                                 <div className="text-center py-4 text-red-500">
                                     Error loading top selling items
                                 </div>
-                            ) : topSellingItems.length === 0 ? (
+                            ) : displayTopSellingItems.length === 0 ? (
                                 <div className="text-center py-4 text-gray-400">
                                     No sales data available
                                 </div>
                             ) : (
                                 <ul className="space-y-2">
-                                    {topSellingItems.map(
+                                    {displayTopSellingItems.map(
                                         (
                                             item: topSellingItem,
                                             index: number

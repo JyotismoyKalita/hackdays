@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userItems } from '@/lib/items/getAll';
+import { useGetAllItems } from '@/hooks/useGetAllItems';
 
 // Define interface for new item data sent to API
 interface NewItemData {
@@ -23,17 +24,7 @@ export default function Inventory() {
     const queryClient = useQueryClient();
 
     // Fetch items using React Query
-    const {
-        data: items = [],
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['items'],
-        queryFn: async () => {
-            const response = await axios.get('/api/items/getAll');
-            return response.data;
-        },
-    });
+    const { data: items = [], isLoading, error } = useGetAllItems();
 
     const [newItem, setNewItem] = useState({
         name: '',

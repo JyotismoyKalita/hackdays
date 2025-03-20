@@ -10,7 +10,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { useGetAll } from './useGetAll';
+import { useGetAll } from '../hooks/useGetAll';
 
 // Define interface for expiry tracking items
 interface ExpiryTrackingItem {
