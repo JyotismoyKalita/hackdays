@@ -14,9 +14,11 @@ export default function Page() {
             <div className="space-y-16">
                 <Featured1 />
                 <FeaturedSec />
-                <Instructors />
+                <div className="my-32">
+                    <Instructors />
+                </div>
             </div>
-            <div className="relative h-[600px] w-full my-20">
+            <div className="relative h-[600px] w-full my-52">
                 <h2 className="text-2xl md:text-4xl lg:text-7xl text-white font-bold text-center mb-8">
                     Connected <span className="text-teal-600">Globally</span>
                 </h2>
