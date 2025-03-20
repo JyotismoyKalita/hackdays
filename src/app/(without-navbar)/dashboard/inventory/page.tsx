@@ -349,8 +349,11 @@ export default function Inventory() {
                         <Button
                             onClick={addItem}
                             className="mt-5 w-full bg-green-500 hover:bg-green-600"
+                            disabled={addItemMutation.isPending}
                         >
-                            Add Item
+                            {addItemMutation.isPending
+                                ? 'Adding...'
+                                : 'Add Item'}
                         </Button>
                     </div>
                 </div>
