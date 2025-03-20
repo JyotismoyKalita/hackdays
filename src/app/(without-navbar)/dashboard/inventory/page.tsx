@@ -92,6 +92,7 @@ export default function Inventory() {
             };
 
             addItemMutation.mutate(itemForApi);
+            setHasExpiry(false);
         }
     };
 

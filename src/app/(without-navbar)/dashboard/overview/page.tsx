@@ -2,11 +2,40 @@
 import { Charts } from '@/components/Charts';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 
 export default function Home() {
     useEffect(() => {
         axios.post('/api/user');
     }, []);
+
+    interface ItemData {
+        name: string;
+        category: string;
+        quantity: number;
+        price: number;
+        costPrice: number;
+        manufacturingDate: string;
+        expiryDate: string;
+        hasExpiry: boolean;
+    }
+
+    const {
+        data: items = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['items'],
+        queryFn: async () => {
+            const response = await axios.get('/api/items/getAll');
+            return response.data;
+        },
+    });
+
+    const uniqueCategories: string[] = Array.from(
+        new Set(items.map((item: ItemData) => item.category))
+    );
+
     return (
         <div className="flex flex-col h-screen p-4 bg-black">
             {/* Overview Header */}
@@ -26,144 +55,51 @@ export default function Home() {
                         </h2>
                     </div>
                     <div className="w-full h-142 p-4 text-lg font-medium bg-black-900 ">
-                        <div className="space-y-6">
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-teal-600">
-                                    Category 1
-                                </h3>
+                        {isLoading ? (
+                            <div className="text-center py-4">Loading...</div>
+                        ) : error ? (
+                            <div className="text-center py-4 text-red-500">
+                                Error loading items
                             </div>
-                            <div>
-                                <ul className="space-y-2">
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 1
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 2
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 3
-                                        </span>
-                                    </li>
-                                </ul>
+                        ) : (
+                            <div className="space-y-6">
+                                {uniqueCategories.map((category) => (
+                                    <div key={category}>
+                                        <div className="space-y-2">
+                                            <h3 className="text-xl font-semibold text-teal-600">
+                                                {category}
+                                            </h3>
+                                        </div>
+                                        <div>
+                                            <ul className="space-y-2">
+                                                {items
+                                                    .filter(
+                                                        (item: ItemData) =>
+                                                            item.category ===
+                                                            category
+                                                    )
+                                                    .map(
+                                                        (
+                                                            item: ItemData,
+                                                            index: number
+                                                        ) => (
+                                                            <li
+                                                                key={index}
+                                                                className="flex items-center space-x-2"
+                                                            >
+                                                                <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                                                <span className="text-gray-200">
+                                                                    {item.name}
+                                                                </span>
+                                                            </li>
+                                                        )
+                                                    )}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-teal-600">
-                                    Category 1
-                                </h3>
-                            </div>
-                            <div>
-                                <ul className="space-y-2">
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 1
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 2
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 3
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-teal-600">
-                                    Category 1
-                                </h3>
-                            </div>
-                            <div>
-                                <ul className="space-y-2">
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 1
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 2
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 3
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-teal-600">
-                                    Category 1
-                                </h3>
-                            </div>
-                            <div>
-                                <ul className="space-y-2">
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 1
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 2
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 3
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div className="space-y-2">
-                                <h3 className="text-xl font-semibold text-teal-400">
-                                    Category 2
-                                </h3>
-                            </div>
-                            <div>
-                                <ul className="space-y-2">
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 1
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 2
-                                        </span>
-                                    </li>
-                                    <li className="flex items-center space-x-2">
-                                        <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                        <span className="text-gray-200">
-                                            Item 3
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
