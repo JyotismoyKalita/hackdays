@@ -20,6 +20,15 @@ export default function Home() {
         hasExpiry: boolean;
     }
 
+    interface topSellingItem {
+        id: number;
+        userId: string;
+        itemId: number;
+        name: string;
+        category: string;
+        topItemsSold: number;
+    }
+
     const {
         data: items = [],
         isLoading,
@@ -35,6 +44,18 @@ export default function Home() {
     const uniqueCategories: string[] = Array.from(
         new Set(items.map((item: ItemData) => item.category))
     );
+
+    const {
+        data: topSellingItems = [],
+        isLoading: isLoadingTopSelling,
+        error: errorTopSelling,
+    } = useQuery({
+        queryKey: ['topSellingItems'],
+        queryFn: async () => {
+            const response = await axios.get('/api/items/topselling');
+            return response.data;
+        },
+    });
 
     return (
         <div className="flex flex-col h-screen p-4 bg-black">
@@ -115,50 +136,38 @@ export default function Home() {
                             </h2>
                         </div>
                         <div className="w-full h-40 p-4 text-lg font-medium bg-black-900 rounded-md border border-gray-700 max-h-175 overflow-y-scroll">
-                            <ul className="space-y-2">
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 1
-                                    </span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 2
-                                    </span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 3
-                                    </span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 3
-                                    </span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 3
-                                    </span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 3
-                                    </span>
-                                </li>
-                                <li className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
-                                    <span className="text-gray-200">
-                                        Item 3
-                                    </span>
-                                </li>
-                            </ul>
+                            {isLoadingTopSelling ? (
+                                <div className="text-center py-4">
+                                    Loading...
+                                </div>
+                            ) : errorTopSelling ? (
+                                <div className="text-center py-4 text-red-500">
+                                    Error loading top selling items
+                                </div>
+                            ) : topSellingItems.length === 0 ? (
+                                <div className="text-center py-4 text-gray-400">
+                                    No sales data available
+                                </div>
+                            ) : (
+                                <ul className="space-y-2">
+                                    {topSellingItems.map(
+                                        (
+                                            item: topSellingItem,
+                                            index: number
+                                        ) => (
+                                            <li
+                                                key={index}
+                                                className="flex items-center space-x-2"
+                                            >
+                                                <div className="w-2 h-2 bg-teal-400 rounded-full"></div>
+                                                <span className="text-gray-200">
+                                                    {item.name}
+                                                </span>
+                                            </li>
+                                        )
+                                    )}
+                                </ul>
+                            )}
                         </div>
                     </div>
                 </div>
