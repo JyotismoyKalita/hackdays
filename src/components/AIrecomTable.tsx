@@ -2,9 +2,9 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { getAll } from '@/lib/getAll';
 import { deleteItem } from '@/lib/items/delete';
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { useGetAll } from './useGetAll';
 
 // Interface for AI recommendations data
 interface AIRecommendations {
@@ -22,17 +22,7 @@ interface AIDiscontinuations {
 }
 
 export function TableDemo() {
-    const {
-        data: allData,
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['allData'],
-        queryFn: async () => {
-            const response = await getAll();
-            return response;
-        },
-    });
+    const { data: allData, isLoading, error } = useGetAll();
 
     const queryClient = useQueryClient();
 

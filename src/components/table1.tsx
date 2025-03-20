@@ -11,8 +11,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { getAll } from '@/lib/getAll';
-import { useQuery } from '@tanstack/react-query';
+import { useGetAll } from './useGetAll';
 
 // Define interfaces for the data structure
 interface StockItem {
@@ -30,17 +29,7 @@ interface AIStockLevels {
 // Example data replaced with the actual structure from console log
 
 export function TableDemo() {
-    const {
-        data: allData,
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['allData'],
-        queryFn: async () => {
-            const response = await getAll();
-            return response;
-        },
-    });
+    const { data: allData, isLoading, error } = useGetAll();
 
     const aiRecommendedStockLevels: AIStockLevels | undefined =
         allData?.get('aiStockLevels');
