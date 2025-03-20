@@ -132,9 +132,41 @@ export default function Inventory() {
         },
     });
 
+    const sellItemMutation = useMutation({
+        mutationFn: ({
+            id,
+            quantity,
+            stockAmounts,
+        }: {
+            id: number;
+            quantity: number;
+            stockAmounts: number;
+        }) =>
+            axios.post('/api/items/sell', {
+                itemId: id,
+                amount: stockAmounts,
+                quantity: quantity,
+            }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['items'] });
+            setStockAmounts({});
+        },
+        onError: (error) => {
+            console.error('Failed to update stock', error);
+        },
+    });
+
     // Change the updateStock function as follows:
     const restock = (item: userItems, amount: number) => {
         restockItemMutation.mutate({ id: item.id, quantity: amount });
+    };
+
+    const sell = (item: userItems, stockAmounts: number) => {
+        sellItemMutation.mutate({
+            id: item.id,
+            stockAmounts: stockAmounts,
+            quantity: item.quantity,
+        });
     };
 
     return (
@@ -242,20 +274,17 @@ export default function Inventory() {
                                                         </Button>
                                                         <Button
                                                             disabled={
-                                                                restockItemMutation.isPending
+                                                                sellItemMutation.isPending
                                                             }
                                                             onClick={() =>
-                                                                restock(
+                                                                sell(
                                                                     item,
-                                                                    -(
-                                                                        parseInt(
-                                                                            stockAmounts[
-                                                                                item
-                                                                                    .id
-                                                                            ] ||
-                                                                                '0'
-                                                                        ) || 0
-                                                                    )
+                                                                    parseInt(
+                                                                        stockAmounts[
+                                                                            item
+                                                                                .id
+                                                                        ] || '0'
+                                                                    ) || 0
                                                                 )
                                                             }
                                                             className="bg-yellow-500 hover:bg-yellow-600 w-24"
