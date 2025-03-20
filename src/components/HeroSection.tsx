@@ -13,7 +13,7 @@ export function SpotlightNew() {
             <Spotlight />
             <div className=" p-4 max-w-7xl  mx-auto relative z-10  w-full pt-20 md:pt-0 transform translate-y-30">
                 <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50">
-                    InvenTrack <br />
+                    <span className="text-teal-600">Inven</span>Track <br />
                 </h1>
                 <div className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
                     <TextGenerateEffect words={words} />
