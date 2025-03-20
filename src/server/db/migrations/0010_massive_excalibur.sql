@@ -1,0 +1,2 @@
+ALTER TABLE "sales_reports" RENAME COLUMN "total_revenue" TO "item_id";--> statement-breakpoint
+ALTER TABLE "sales_reports" ADD CONSTRAINT "sales_reports_item_id_items_id_fk" FOREIGN KEY ("item_id") REFERENCES "public"."items"("id") ON DELETE cascade ON UPDATE no action;

@@ -1,0 +1,1 @@
+ALTER TABLE "sales_reports" DROP COLUMN "generated_at";

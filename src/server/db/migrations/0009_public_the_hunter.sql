@@ -1,0 +1,1 @@
+ALTER TABLE "purchases" DROP COLUMN "purchase_price";

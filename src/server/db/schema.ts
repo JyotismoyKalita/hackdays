@@ -1,98 +1,171 @@
-import { relations } from 'drizzle-orm';
 import {
-    boolean,
-    date,
-    integer,
-    pgEnum,
     pgTable,
+    serial,
     text,
-    uuid,
+    integer,
+    boolean,
+    timestamp,
     varchar,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
-export const PreCategory = pgEnum('preCategory', [
-    'Electronics',
-    'Furniture',
-    'Clothing',
-    'Food',
-    'Books',
-    'Other',
-]);
-
+// =======================
+// UserTable Table (Authentication & Role Management)
+// =======================
 export const UserTable = pgTable('user', {
     id: text('id').primaryKey().notNull(),
     name: varchar('name', { length: 255 }),
     email: varchar('email', { length: 255 }).notNull(),
 });
 
-export const CompanyTable = pgTable('company', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    name: varchar('name', { length: 255 }).notNull(),
-    userId: text('userId')
-        .references(() => UserTable.id)
-        .notNull(),
-});
-
-export const ItemTable = pgTable('item', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    model: varchar('model', { length: 255 }).notNull(),
-    hasExpiryDate: boolean('hasExpiryDate').notNull(),
-    manufactureDate: date('manufactureDate').notNull(),
-    expiryDate: date('expiryDate').notNull(),
+// =======================
+// Items Table (Inventory per User)
+// =======================
+export const items = pgTable('items', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+        .notNull()
+        .references(() => UserTable.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    category: text('category').notNull(),
+    categoryId: integer('category_id')
+        .notNull()
+        .references(() => categories.id, { onDelete: 'cascade' }),
     quantity: integer('quantity').notNull(),
-    category: PreCategory('category').notNull(),
-    customCategory: varchar('customCategory', { length: 255 }),
     price: integer('price').notNull(),
-    companyId: uuid('companyId')
-        .references(() => CompanyTable.id)
-        .notNull(),
+    costPrice: integer('cost_price').notNull(),
+    hasExpiry: boolean('has_expiry').default(false),
+    manufacturingDate: timestamp('manufacturing_date'),
+    expiryDate: timestamp('expiry_date'),
+    addedAt: timestamp('added_at').defaultNow(),
 });
 
-export const SoldItemTable = pgTable('soldItem', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    model: varchar('model', { length: 255 }).notNull(),
+export const categories = pgTable('categories', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+        .notNull()
+        .references(() => UserTable.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+});
+
+// =======================
+// Sold Items Table (User-Specific Sales)
+// =======================
+export const soldItems = pgTable('sold_items', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+        .notNull()
+        .references(() => UserTable.id, { onDelete: 'cascade' }),
+    itemId: integer('item_id')
+        .notNull()
+        .references(() => items.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    category: text('category').notNull(),
     quantity: integer('quantity').notNull(),
-    soldDate: date('soldDate').notNull(),
-    soldPrice: integer('soldPrice').notNull(),
-    companyId: uuid('companyId')
-        .references(() => CompanyTable.id)
-        .notNull(),
+    salePrice: integer('sale_price').notNull(),
+    soldAt: timestamp('sold_at').defaultNow().notNull(),
 });
 
-export const CompanyTableRelations = relations(
-    CompanyTable,
-    ({ one, many }) => {
-        return {
-            user: one(UserTable, {
-                fields: [CompanyTable.userId],
-                references: [UserTable.id],
-            }),
-            items: many(ItemTable),
-            soldItems: many(SoldItemTable),
-        };
-    }
-);
-
-export const UserTableRelations = relations(UserTable, ({ many }) => {
-    return {
-        companies: many(CompanyTable),
-    };
+// =======================
+// Expired Items Table (Tracks Expired Stock)
+// =======================
+export const expiredItems = pgTable('expired_items', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+        .notNull()
+        .references(() => UserTable.id, { onDelete: 'cascade' }),
+    itemId: integer('item_id')
+        .notNull()
+        .references(() => items.id, { onDelete: 'cascade' }),
 });
 
-export const ItemTableRelations = relations(ItemTable, ({ one }) => {
-    return {
-        company: one(CompanyTable, {
-            fields: [ItemTable.companyId],
-            references: [CompanyTable.id],
-        }),
-    };
+// =======================
+// Purchases Table (Stock Replenishment per User)
+// =======================
+export const purchases = pgTable('purchases', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+        .notNull()
+        .references(() => UserTable.id, { onDelete: 'cascade' }),
+    itemId: integer('item_id')
+        .notNull()
+        .references(() => items.id, { onDelete: 'cascade' }),
+    quantity: integer('quantity').notNull(),
+    name: text('name').notNull(),
+    category: text('category').notNull(),
+    costPrice: integer('cost_price').notNull(),
+    purchasedAt: timestamp('purchased_at').defaultNow().notNull(),
 });
 
-export const SoldItemTableRelations = relations(SoldItemTable, ({ one }) => {
-    return {
-        company: one(CompanyTable, {
-            fields: [SoldItemTable.companyId],
-            references: [CompanyTable.id],
-        }),
-    };
+// =======================
+// Sales Reports Table (User-Specific Sales Analysis)
+// =======================
+export const salesReports = pgTable('sales_reports', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id')
+        .notNull()
+        .references(() => UserTable.id, { onDelete: 'cascade' }),
+    itemId: integer('item_id')
+        .notNull()
+        .references(() => items.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    category: text('category').notNull(),
+    totalItemsSold: integer('total_items_sold').notNull(),
 });
+
+// =======================
+// Define Relationships
+// =======================
+export const usersRelations = relations(UserTable, ({ many }) => ({
+    items: many(items),
+    categories: many(categories),
+    soldItems: many(soldItems),
+    expiredItems: many(expiredItems),
+    purchases: many(purchases),
+    salesReports: many(salesReports),
+}));
+
+export const itemsRelations = relations(items, ({ one, many }) => ({
+    user: one(UserTable, {
+        fields: [items.userId],
+        references: [UserTable.id],
+    }),
+    category: one(categories, {
+        fields: [items.categoryId],
+        references: [categories.id],
+    }),
+    salesReports: one(salesReports, {
+        fields: [items.id],
+        references: [salesReports.itemId],
+    }),
+    soldItems: many(soldItems),
+    expiredItems: many(expiredItems),
+    purchases: many(purchases),
+}));
+
+export const categoriesRelations = relations(categories, ({ one, many }) => ({
+    user: one(UserTable, {
+        fields: [categories.userId],
+        references: [UserTable.id],
+    }),
+    items: many(items),
+}));
+
+export const soldItemsRelations = relations(soldItems, ({ one }) => ({
+    user: one(UserTable, {
+        fields: [soldItems.userId],
+        references: [UserTable.id],
+    }),
+    item: one(items, { fields: [soldItems.itemId], references: [items.id] }),
+}));
+
+export const salesReportRelations = relations(salesReports, ({ one }) => ({
+    item: one(items, {
+        fields: [salesReports.itemId],
+        references: [items.id],
+    }),
+    user: one(UserTable, {
+        fields: [salesReports.userId],
+        references: [UserTable.id],
+    }),
+}));
