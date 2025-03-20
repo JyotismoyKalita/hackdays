@@ -1,6 +1,12 @@
+'use client';
 import { Charts } from '@/components/Charts';
+import axios from 'axios';
+import { useEffect } from 'react';
 
 export default function Home() {
+    useEffect(() => {
+        axios.post('/api/user');
+    }, []);
     return (
         <div className="flex flex-col h-screen p-4 bg-black">
             {/* Overview Header */}
