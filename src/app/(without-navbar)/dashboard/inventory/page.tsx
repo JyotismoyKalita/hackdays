@@ -90,10 +90,10 @@ export default function Inventory() {
         }
     };
 
-    // Use mutation for removing items
+    // Use mutation for removing items with item ID tracking
     const removeItemMutation = useMutation({
         mutationFn: (itemId: number) =>
-            axios.delete(`/api/items/delete/${itemId}`),
+            axios.get(`/api/items/delete?item=${itemId}`),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
         },
@@ -102,8 +102,16 @@ export default function Inventory() {
         },
     });
 
+    // Track which item is being removed
+    const [removingItemId, setRemovingItemId] = useState<number | null>(null);
+
     const removeItem = (id: number) => {
-        removeItemMutation.mutate(id);
+        setRemovingItemId(id);
+        removeItemMutation.mutate(id, {
+            onSettled: () => {
+                setRemovingItemId(null);
+            },
+        });
     };
 
     // Use mutation for updating stock
@@ -220,8 +228,15 @@ export default function Inventory() {
                                                                 )
                                                             }
                                                             className="bg-red-500 hover:bg-red-600 w-24"
+                                                            disabled={
+                                                                removeItemMutation.isPending
+                                                            }
                                                         >
-                                                            Remove
+                                                            {removeItemMutation.isPending &&
+                                                            removingItemId ===
+                                                                item.id
+                                                                ? 'Removing...'
+                                                                : 'Remove'}
                                                         </Button>
                                                     </td>
                                                 </tr>
