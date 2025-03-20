@@ -28,60 +28,6 @@ interface AIStockLevels {
 }
 
 // Example data replaced with the actual structure from console log
-const stockLevels = [
-    {
-        category: 'Category 1',
-        items: [
-            {
-                name: 'Item 1',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 2',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 3',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-        ],
-    },
-    {
-        category: 'Category 2',
-        items: [
-            {
-                name: 'Item 1',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 2',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-            {
-                name: 'Item 3',
-                currentStock: 10,
-                maxStock: 100,
-                minStock: 40,
-                reorder: 60,
-            },
-        ],
-    },
-];
 
 export function TableDemo() {
     const {
