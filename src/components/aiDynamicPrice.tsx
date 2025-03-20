@@ -1,4 +1,4 @@
-//for ai dynamic price
+'use client';
 import React from 'react';
 
 import {
@@ -10,63 +10,65 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import { getAll } from '@/lib/getAll';
+import { useQuery } from '@tanstack/react-query';
 
-const stockLevels = [
-    {
-        category: 'Category 1',
-        items: [
-            {
-                name: 'Item 1',
-                demand: 'HIGH',
-                willExpire: '3 days',
-                currentPrice: 80,
-                aiRecommendedPrice: 80,
-            },
-            {
-                name: 'Item 2',
-                demand: 'LOW',
-                willExpire: '-',
-                currentPrice: 30,
-                aiRecommendedPrice: 25,
-            },
-            {
-                name: 'Item 3',
-                demand: 'LOW',
-                willExpire: '1 day',
-                currentPrice: 40,
-                aiRecommendedPrice: 30,
-            },
-        ],
-    },
-    {
-        category: 'Category 2',
-        items: [
-            {
-                name: 'Item 1',
-                demand: 'HIGH',
-                willExpire: '3 days',
-                currentPrice: 80,
-                aiRecommendedPrice: 80,
-            },
-            {
-                name: 'Item 2',
-                demand: 'LOW',
-                willExpire: '-',
-                currentPrice: 30,
-                aiRecommendedPrice: 25,
-            },
-            {
-                name: 'Item 3',
-                demand: 'LOW',
-                willExpire: '1 day',
-                currentPrice: 40,
-                aiRecommendedPrice: 30,
-            },
-        ],
-    },
-];
+// Define interfaces for the data structure
+interface PriceItem {
+    Item: string;
+    Demand: string;
+    willExpireIn: string;
+    currentPrice: number;
+    newPrice: number;
+}
+
+interface DynamicPriceData {
+    [category: string]: PriceItem[];
+}
+
+// The hardcoded data can be removed as we'll use the API data
 
 export function TableDemo() {
+    const {
+        data: allData,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['allData'],
+        queryFn: async () => {
+            const response = await getAll();
+            return response;
+        },
+    });
+
+    const dynamicPrice = allData?.get('dynamicPrice') as
+        | DynamicPriceData
+        | undefined;
+
+    // Handle loading state
+    if (isLoading) {
+        return <div className="text-center py-4">Loading...</div>;
+    }
+
+    // Handle error state
+    if (error) {
+        return (
+            <div className="text-center py-4 text-red-500">
+                Error loading data
+            </div>
+        );
+    }
+
+    // If no data is available
+    if (!dynamicPrice) {
+        return (
+            <div className="text-center py-4">No pricing data available</div>
+        );
+    }
+
+    // Get categories from the dynamicPrice object
+    const categories = Object.keys(dynamicPrice);
+
     return (
         <div className="border border-gray-300 rounded-xl overflow-y-scroll shadow-md max-w-6xl w-full mx-auto">
             <Table className="w-full border-collapse">
@@ -93,30 +95,28 @@ export function TableDemo() {
                 </TableHeader>
 
                 <TableBody>
-                    {stockLevels.map((category) => (
-                        <React.Fragment key={category.category}>
+                    {categories.map((category) => (
+                        <React.Fragment key={category}>
                             <TableRow className="bg-gray-800">
                                 <TableCell
                                     colSpan={5}
                                     className="font-bold text-xl py-3 text-teal-600"
                                 >
-                                    {category.category}
+                                    {category}
                                 </TableCell>
                             </TableRow>
-                            {category.items.map((item, index) => (
+                            {dynamicPrice[category].map((item, index) => (
                                 <TableRow
                                     key={index}
                                     className="border-t text-lg"
                                 >
                                     <TableCell className="font-medium">
-                                        • {item.name}
+                                        • {item.Item}
                                     </TableCell>
-                                    <TableCell>{item.demand}</TableCell>
-                                    <TableCell>{item.willExpire}</TableCell>
+                                    <TableCell>{item.Demand}</TableCell>
+                                    <TableCell>{item.willExpireIn}</TableCell>
                                     <TableCell>{item.currentPrice}</TableCell>
-                                    <TableCell>
-                                        {item.aiRecommendedPrice}
-                                    </TableCell>
+                                    <TableCell>{item.newPrice}</TableCell>
                                 </TableRow>
                             ))}
                         </React.Fragment>
