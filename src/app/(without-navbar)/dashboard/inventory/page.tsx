@@ -117,7 +117,7 @@ export default function Inventory() {
     // Use mutation for updating stock
     const updateStockMutation = useMutation({
         mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
-            axios.patch(`/api/items/updateQuantity/${id}`, { quantity }),
+            axios.post(`/api/items/restock`, { itemId: id, amount: quantity }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
         },
@@ -127,7 +127,7 @@ export default function Inventory() {
     });
 
     const updateStock = (item: userItems, amount: number) => {
-        const newQuantity = Math.max(0, item.quantity + amount);
+        const newQuantity = item.quantity + amount;
         updateStockMutation.mutate({ id: item.id, quantity: newQuantity });
     };
 
@@ -197,7 +197,7 @@ export default function Inventory() {
                                                         <Input
                                                             type="number"
                                                             placeholder="Qty"
-                                                            className="w-20 text-black"
+                                                            className="w-20 text-white"
                                                         />
                                                         <Button
                                                             onClick={() =>
