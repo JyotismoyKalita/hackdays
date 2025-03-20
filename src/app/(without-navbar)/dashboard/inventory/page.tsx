@@ -4,13 +4,36 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import axios from 'axios';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { userItems } from '@/lib/items/getAll';
+
+// Define interface for new item data sent to API
+interface NewItemData {
+    name: string;
+    category: string;
+    quantity: number;
+    price: number;
+    costPrice: number;
+    manufacturingDate: string;
+    expiryDate: string;
+    hasExpiry: boolean;
+}
 
 export default function Inventory() {
-    const [items, setItems] = useState([
-        { category: 'Category 1', name: 'Item 1', stock: 10 },
-        { category: 'Category 1', name: 'Item 2', stock: 20 },
-        { category: 'Category 1', name: 'Item 3', stock: 30 },
-    ]);
+    const queryClient = useQueryClient();
+
+    // Fetch items using React Query
+    const {
+        data: items = [],
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['items'],
+        queryFn: async () => {
+            const response = await axios.get('/api/items/getAll');
+            return response.data;
+        },
+    });
 
     const [newItem, setNewItem] = useState({
         name: '',
@@ -22,9 +45,37 @@ export default function Inventory() {
     const [hasExpiry, setHasExpiry] = useState(false);
     const [dates, setDates] = useState({ manufacturing: '', expiry: '' });
 
+    // Use mutation for adding items with proper typing
+    const addItemMutation = useMutation({
+        mutationFn: (itemData: NewItemData) =>
+            axios.post('/api/items/add', itemData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['items'] });
+
+            // Clear the form
+            setNewItem({
+                name: '',
+                category: '',
+                stock: '',
+                price: '',
+                costPrice: '',
+            });
+
+            // Reset expiry dates if needed
+            if (hasExpiry) {
+                setDates({ manufacturing: '', expiry: '' });
+                setHasExpiry(false);
+            }
+        },
+        onError: (error) => {
+            console.error('Failed to add item:', error);
+            // You could add user feedback for errors here
+        },
+    });
+
     const addItem = async () => {
         if (newItem.name && newItem.category && newItem.stock) {
-            const itemForApi = {
+            const itemForApi: NewItemData = {
                 name: newItem.name,
                 category: newItem.category,
                 quantity: parseInt(newItem.stock),
@@ -35,57 +86,46 @@ export default function Inventory() {
                 hasExpiry: hasExpiry,
             };
 
-            try {
-                await axios.post('/api/items/add', itemForApi);
-
-                // Add the new item to the local state with the correct property name
-                setItems([
-                    ...items,
-                    {
-                        name: newItem.name,
-                        category: newItem.category,
-                        stock: parseInt(newItem.stock),
-                    },
-                ]);
-
-                // Clear the form
-                setNewItem({
-                    name: '',
-                    category: '',
-                    stock: '',
-                    price: '',
-                    costPrice: '',
-                });
-
-                // Reset expiry dates if needed
-                if (hasExpiry) {
-                    setDates({ manufacturing: '', expiry: '' });
-                    setHasExpiry(false);
-                }
-            } catch (error) {
-                console.error('Failed to add item:', error);
-                // You could add user feedback for errors here
-            }
+            addItemMutation.mutate(itemForApi);
         }
     };
 
-    const removeItem = (index: number) => {
-        setItems(items.filter((_, i) => i !== index));
+    // Use mutation for removing items
+    const removeItemMutation = useMutation({
+        mutationFn: (itemId: number) =>
+            axios.delete(`/api/items/delete/${itemId}`),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['items'] });
+        },
+        onError: (error) => {
+            console.error('Failed to remove item:', error);
+        },
+    });
+
+    const removeItem = (id: number) => {
+        removeItemMutation.mutate(id);
     };
 
-    const updateStock = (index: number, amount: number) => {
-        setItems(
-            items.map((item, i) =>
-                i === index
-                    ? { ...item, stock: Math.max(0, item.stock + amount) }
-                    : item
-            )
-        );
+    // Use mutation for updating stock
+    const updateStockMutation = useMutation({
+        mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
+            axios.patch(`/api/items/updateQuantity/${id}`, { quantity }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['items'] });
+        },
+        onError: (error) => {
+            console.error('Failed to update stock:', error);
+        },
+    });
+
+    const updateStock = (item: userItems, amount: number) => {
+        const newQuantity = Math.max(0, item.quantity + amount);
+        updateStockMutation.mutate({ id: item.id, quantity: newQuantity });
     };
 
     return (
         <div className="flex w-full h-full bg-black text-white p-4">
-            <div className="w-full max-w-screen-xl p-6  shadow-lg   bg-black-900 flex flex-col">
+            <div className="w-full max-w-screen-xl p-6 shadow-lg bg-black-900 flex flex-col">
                 <h2 className="text-3xl font-bold text-center mb-6 text-teal-600">
                     Inventory
                 </h2>
@@ -94,75 +134,103 @@ export default function Inventory() {
                     {/* Items List */}
                     <div className="border p-6 rounded-lg bg-gray-800 flex-1 w-full h-full min-h-102.5 overflow-auto">
                         <h3 className="text-xl font-semibold mb-4">Items</h3>
-                        <div className="w-full overflow-x-auto">
-                            <table className="w-full text-left border-collapse">
-                                <thead>
-                                    <tr className="border-b border-gray-600">
-                                        <th className="p-3 text-teal-600">
-                                            Category
-                                        </th>
-                                        <th className="p-3">Item</th>
-                                        <th className="p-3">Stock</th>
-                                        <th className="p-3">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {items.map((item, index) => (
-                                        <tr
-                                            key={index}
-                                            className="border-b border-gray-700"
-                                        >
-                                            <td className="p-3 text-teal-600">
-                                                {item.category}
-                                            </td>
-                                            <td className="p-3">{item.name}</td>
-                                            <td className="p-3">
-                                                {item.stock}
-                                            </td>
-                                            <td className="p-3 flex gap-2">
-                                                <Input
-                                                    type="number"
-                                                    placeholder="Qty"
-                                                    onChange={(e) =>
-                                                        updateStock(
-                                                            index,
-                                                            parseInt(
-                                                                e.target.value
-                                                            ) || 0
-                                                        )
-                                                    }
-                                                    className="w-20 text-black"
-                                                />
-                                                <Button
-                                                    onClick={() =>
-                                                        updateStock(index, 1)
-                                                    }
-                                                    className="bg-blue-500 hover:bg-blue-600 w-24"
-                                                >
-                                                    Restock
-                                                </Button>
-                                                <Button
-                                                    onClick={() =>
-                                                        updateStock(index, -1)
-                                                    }
-                                                    className="bg-yellow-500 hover:bg-yellow-600 w-24"
-                                                >
-                                                    Sell
-                                                </Button>
-                                                <Button
-                                                    onClick={() =>
-                                                        removeItem(index)
-                                                    }
-                                                    className="bg-red-500 hover:bg-red-600 w-24"
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </td>
+
+                        {isLoading && <p>Loading inventory items...</p>}
+
+                        {error && (
+                            <p className="text-red-500">
+                                Error loading items: {(error as Error).message}
+                            </p>
+                        )}
+
+                        {!isLoading && !error && (
+                            <div className="w-full overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="border-b border-gray-600">
+                                            <th className="p-3 text-teal-600">
+                                                Category
+                                            </th>
+                                            <th className="p-3">Item</th>
+                                            <th className="p-3">Stock</th>
+                                            <th className="p-3">Price</th>
+                                            <th className="p-3">Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        {items.length === 0 ? (
+                                            <tr>
+                                                <td
+                                                    colSpan={5}
+                                                    className="p-3 text-center"
+                                                >
+                                                    No items found
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            items.map((item: userItems) => (
+                                                <tr
+                                                    key={item.id}
+                                                    className="border-b border-gray-700"
+                                                >
+                                                    <td className="p-3 text-teal-600">
+                                                        {item.category}
+                                                    </td>
+                                                    <td className="p-3">
+                                                        {item.name}
+                                                    </td>
+                                                    <td className="p-3">
+                                                        {item.quantity}
+                                                    </td>
+                                                    <td className="p-3">
+                                                        {item.price.toFixed(2)}
+                                                    </td>
+                                                    <td className="p-3 flex gap-2">
+                                                        <Input
+                                                            type="number"
+                                                            placeholder="Qty"
+                                                            className="w-20 text-black"
+                                                        />
+                                                        <Button
+                                                            onClick={() =>
+                                                                updateStock(
+                                                                    item,
+                                                                    1
+                                                                )
+                                                            }
+                                                            className="bg-blue-500 hover:bg-blue-600 w-24"
+                                                        >
+                                                            Restock
+                                                        </Button>
+                                                        <Button
+                                                            onClick={() =>
+                                                                updateStock(
+                                                                    item,
+                                                                    -1
+                                                                )
+                                                            }
+                                                            className="bg-yellow-500 hover:bg-yellow-600 w-24"
+                                                        >
+                                                            Sell
+                                                        </Button>
+                                                        <Button
+                                                            onClick={() =>
+                                                                removeItem(
+                                                                    item.id
+                                                                )
+                                                            }
+                                                            className="bg-red-500 hover:bg-red-600 w-24"
+                                                        >
+                                                            Remove
+                                                        </Button>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </div>
 
                     {/* Add New Item Form */}
