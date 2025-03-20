@@ -10,8 +10,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { getAll } from '@/lib/getAll';
-import { useQuery } from '@tanstack/react-query';
+import { useGetAll } from './useGetAll';
 
 // Define interfaces for the data structure
 interface PriceItem {
@@ -29,17 +28,7 @@ interface DynamicPriceData {
 // The hardcoded data can be removed as we'll use the API data
 
 export function TableDemo() {
-    const {
-        data: allData,
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['allData'],
-        queryFn: async () => {
-            const response = await getAll();
-            return response;
-        },
-    });
+    const { data: allData, isLoading, error } = useGetAll();
 
     const dynamicPrice = allData?.get('dynamicPrice') as
         | DynamicPriceData

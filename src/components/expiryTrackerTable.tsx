@@ -9,8 +9,8 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { getAll } from '@/lib/getAll';
-import { useQuery } from '@tanstack/react-query';
+
+import { useGetAll } from './useGetAll';
 
 // Define interface for expiry tracking items
 interface ExpiryTrackingItem {
@@ -42,17 +42,7 @@ const formatDate = (dateStr: string): string => {
 };
 
 export function TableDemo() {
-    const {
-        data: allData,
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['allData'],
-        queryFn: async () => {
-            const response = await getAll();
-            return response;
-        },
-    });
+    const { data: allData, isLoading, error } = useGetAll();
 
     const expiryTracking =
         (allData?.get('expiryTracking') as ExpiryTrackingItem[]) || [];
