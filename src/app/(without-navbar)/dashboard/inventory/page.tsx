@@ -42,6 +42,12 @@ export default function Inventory() {
         price: '',
         costPrice: '',
     });
+
+    // New state for tracking quantity changes per item
+    const [stockAmounts, setStockAmounts] = useState<{ [id: number]: string }>(
+        {}
+    );
+
     const [hasExpiry, setHasExpiry] = useState(false);
     const [dates, setDates] = useState({ manufacturing: '', expiry: '' });
 
@@ -69,7 +75,6 @@ export default function Inventory() {
         },
         onError: (error) => {
             console.error('Failed to add item:', error);
-            // You could add user feedback for errors here
         },
     });
 
@@ -115,20 +120,21 @@ export default function Inventory() {
     };
 
     // Use mutation for updating stock
-    const updateStockMutation = useMutation({
+    const restockItemMutation = useMutation({
         mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
             axios.post(`/api/items/restock`, { itemId: id, amount: quantity }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
+            setStockAmounts({});
         },
         onError: (error) => {
             console.error('Failed to update stock:', error);
         },
     });
 
-    const updateStock = (item: userItems, amount: number) => {
-        const newQuantity = item.quantity + amount;
-        updateStockMutation.mutate({ id: item.id, quantity: newQuantity });
+    // Change the updateStock function as follows:
+    const restock = (item: userItems, amount: number) => {
+        restockItemMutation.mutate({ id: item.id, quantity: amount });
     };
 
     return (
@@ -197,13 +203,37 @@ export default function Inventory() {
                                                         <Input
                                                             type="number"
                                                             placeholder="Qty"
+                                                            value={
+                                                                stockAmounts[
+                                                                    item.id
+                                                                ] || ''
+                                                            }
                                                             className="w-20 text-white"
+                                                            onChange={(e) =>
+                                                                setStockAmounts(
+                                                                    {
+                                                                        ...stockAmounts,
+                                                                        [item.id]:
+                                                                            e
+                                                                                .target
+                                                                                .value,
+                                                                    }
+                                                                )
+                                                            }
                                                         />
                                                         <Button
+                                                            disabled={
+                                                                restockItemMutation.isPending
+                                                            }
                                                             onClick={() =>
-                                                                updateStock(
+                                                                restock(
                                                                     item,
-                                                                    1
+                                                                    parseInt(
+                                                                        stockAmounts[
+                                                                            item
+                                                                                .id
+                                                                        ] || '0'
+                                                                    ) || 0
                                                                 )
                                                             }
                                                             className="bg-blue-500 hover:bg-blue-600 w-24"
@@ -211,10 +241,21 @@ export default function Inventory() {
                                                             Restock
                                                         </Button>
                                                         <Button
+                                                            disabled={
+                                                                restockItemMutation.isPending
+                                                            }
                                                             onClick={() =>
-                                                                updateStock(
+                                                                restock(
                                                                     item,
-                                                                    -1
+                                                                    -(
+                                                                        parseInt(
+                                                                            stockAmounts[
+                                                                                item
+                                                                                    .id
+                                                                            ] ||
+                                                                                '0'
+                                                                        ) || 0
+                                                                    )
                                                                 )
                                                             }
                                                             className="bg-yellow-500 hover:bg-yellow-600 w-24"
