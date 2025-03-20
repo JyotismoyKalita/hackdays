@@ -9,5 +9,7 @@ export const useGetAll = () => {
             const response = await getAll();
             return response;
         },
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
     });
 };
