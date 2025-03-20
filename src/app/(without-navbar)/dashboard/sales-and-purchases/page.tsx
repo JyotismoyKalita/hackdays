@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Table } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import axios from 'axios';
@@ -25,6 +25,8 @@ export default function SalesPurchases() {
     const [salesToDate, setSalesToDate] = useState('');
     const [purchaseFromDate, setPurchaseFromDate] = useState('');
     const [purchaseToDate, setPurchaseToDate] = useState('');
+    const [cachedSoldItems, setCachedSoldItems] = useState([]);
+    const [cachedPurchaseItems, setCachedPurchaseItems] = useState([]);
 
     interface SoldItems {
         id: number;
@@ -48,6 +50,20 @@ export default function SalesPurchases() {
         purchasedAt: Date;
     }
 
+    // Load cached data on component mount
+    useEffect(() => {
+        const storedSoldItems = sessionStorage.getItem('soldItems');
+        const storedPurchaseItems = sessionStorage.getItem('purchaseItems');
+
+        if (storedSoldItems) {
+            setCachedSoldItems(JSON.parse(storedSoldItems));
+        }
+
+        if (storedPurchaseItems) {
+            setCachedPurchaseItems(JSON.parse(storedPurchaseItems));
+        }
+    }, []);
+
     const {
         data: soldItems = [],
         isLoading: isSoldLoading,
@@ -56,6 +72,8 @@ export default function SalesPurchases() {
         queryKey: ['items'],
         queryFn: async () => {
             const response = await axios.get('/api/items/soldItems');
+            // Store the fetched data in sessionStorage
+            sessionStorage.setItem('soldItems', JSON.stringify(response.data));
             return response.data;
         },
     });
@@ -68,9 +86,24 @@ export default function SalesPurchases() {
         queryKey: ['purchasedItems'],
         queryFn: async () => {
             const response = await axios.get('/api/items/purchasedItems');
+            // Store the fetched data in sessionStorage
+            sessionStorage.setItem(
+                'purchaseItems',
+                JSON.stringify(response.data)
+            );
             return response.data;
         },
     });
+
+    // Use either the fetched data or cached data based on loading state
+    const displaySoldItems =
+        isSoldLoading && cachedSoldItems.length > 0
+            ? cachedSoldItems
+            : soldItems;
+    const displayPurchaseItems =
+        isPurchaseLoading && cachedPurchaseItems.length > 0
+            ? cachedPurchaseItems
+            : purchaseItems;
 
     const formatDateString = (dateString: string): string => {
         if (!dateString) return '';
@@ -84,7 +117,7 @@ export default function SalesPurchases() {
     };
 
     // Group items by category
-    const soldItemsData: Category[] = soldItems.reduce(
+    const soldItemsData: Category[] = displaySoldItems.reduce(
         (categories: Category[], item: SoldItems) => {
             // Find if category already exists
             const existingCategory = categories.find(
@@ -128,7 +161,7 @@ export default function SalesPurchases() {
     );
 
     // Group purchased items by category
-    const purchasedItemsData: Category[] = purchaseItems.reduce(
+    const purchasedItemsData: Category[] = displayPurchaseItems.reduce(
         (categories: Category[], item: PurchasedItems) => {
             // Find if category already exists
             const existingCategory = categories.find(
@@ -231,8 +264,48 @@ export default function SalesPurchases() {
                         onChange={(e) => setSalesToDate(e.target.value)}
                     />
                 </div>
-                {isSoldLoading ? (
+                {isSoldLoading && cachedSoldItems.length === 0 ? (
                     <div className="text-center py-4">Loading...</div>
+                ) : isSoldLoading && cachedSoldItems.length > 0 ? (
+                    <>
+                        {filteredSalesData.map((category) => (
+                            <div key={category.id} className="mb-6">
+                                <h3 className="font-semibold mb-2">
+                                    {category.name}
+                                </h3>
+                                <Table>
+                                    <thead>
+                                        <tr>
+                                            <th className="border p-2">Item</th>
+                                            <th className="border p-2">
+                                                Price
+                                            </th>
+                                            <th className="border p-2">Date</th>
+                                            <th className="border p-2">Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {category.items.map((item) => (
+                                            <tr key={item.id}>
+                                                <td className="border p-2">
+                                                    {item.name}
+                                                </td>
+                                                <td className="border p-2">
+                                                    ${item.price}
+                                                </td>
+                                                <td className="border p-2">
+                                                    {item.date}
+                                                </td>
+                                                <td className="border p-2">
+                                                    {item.qty}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </div>
+                        ))}
+                    </>
                 ) : isSoldError ? (
                     <div className="text-center py-4 text-red-500">
                         Error loading items
@@ -297,8 +370,48 @@ export default function SalesPurchases() {
                         onChange={(e) => setPurchaseToDate(e.target.value)}
                     />
                 </div>
-                {isPurchaseLoading ? (
+                {isPurchaseLoading && cachedPurchaseItems.length === 0 ? (
                     <div className="text-center py-4">Loading...</div>
+                ) : isPurchaseLoading && cachedPurchaseItems.length > 0 ? (
+                    <>
+                        {filteredPurchaseData.map((category) => (
+                            <div key={category.id} className="mb-6">
+                                <h3 className="font-semibold mb-2">
+                                    {category.name}
+                                </h3>
+                                <Table>
+                                    <thead>
+                                        <tr>
+                                            <th className="border p-2">Item</th>
+                                            <th className="border p-2">
+                                                Price
+                                            </th>
+                                            <th className="border p-2">Date</th>
+                                            <th className="border p-2">Qty</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {category.items.map((item) => (
+                                            <tr key={item.id}>
+                                                <td className="border p-2">
+                                                    {item.name}
+                                                </td>
+                                                <td className="border p-2">
+                                                    ${item.price}
+                                                </td>
+                                                <td className="border p-2">
+                                                    {item.date}
+                                                </td>
+                                                <td className="border p-2">
+                                                    {item.qty}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </div>
+                        ))}
+                    </>
                 ) : isPurchaseError ? (
                     <div className="text-center py-4 text-red-500">
                         Error loading items

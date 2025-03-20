@@ -1,11 +1,12 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import axios from 'axios';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { userItems } from '@/lib/items/getAll';
+import { useGetAllItems } from '@/hooks/useGetAllItems';
 
 // Define interface for new item data sent to API
 interface NewItemData {
@@ -23,17 +24,30 @@ export default function Inventory() {
     const queryClient = useQueryClient();
 
     // Fetch items using React Query
-    const {
-        data: items = [],
-        isLoading,
-        error,
-    } = useQuery({
-        queryKey: ['items'],
-        queryFn: async () => {
-            const response = await axios.get('/api/items/getAll');
-            return response.data;
-        },
+    const { data: fetchedItems = [], isLoading, error } = useGetAllItems();
+
+    // Use cached items from sessionStorage when loading
+    const [cachedItems, setCachedItems] = useState<userItems[]>(() => {
+        if (typeof window !== 'undefined') {
+            const storedItems = sessionStorage.getItem('inventoryItems');
+            return storedItems ? JSON.parse(storedItems) : [];
+        }
+        return [];
     });
+
+    // Use cached items when loading, otherwise use fetched items
+    const items = isLoading ? cachedItems : fetchedItems;
+
+    // Store items in sessionStorage when they change
+    useEffect(() => {
+        if (!isLoading && fetchedItems.length > 0) {
+            sessionStorage.setItem(
+                'inventoryItems',
+                JSON.stringify(fetchedItems)
+            );
+            setCachedItems(fetchedItems);
+        }
+    }, [fetchedItems, isLoading]);
 
     const [newItem, setNewItem] = useState({
         name: '',
@@ -182,7 +196,9 @@ export default function Inventory() {
                     <div className="border p-6 rounded-lg bg-gray-800 flex-1 w-full h-full min-h-102.5 overflow-auto">
                         <h3 className="text-xl font-semibold mb-4">Items</h3>
 
-                        {isLoading && <p>Loading inventory items...</p>}
+                        {isLoading && cachedItems.length === 0 && (
+                            <p>Loading inventory items...</p>
+                        )}
 
                         {error && (
                             <p className="text-red-500">
@@ -190,7 +206,7 @@ export default function Inventory() {
                             </p>
                         )}
 
-                        {!isLoading && !error && (
+                        {(!isLoading || cachedItems.length > 0) && !error && (
                             <div className="w-full overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>

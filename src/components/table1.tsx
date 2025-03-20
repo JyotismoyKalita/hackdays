@@ -11,7 +11,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import { useGetAll } from './useGetAll';
+import { useGetAll } from '../hooks/useGetAll';
 
 // Define interfaces for the data structure
 interface StockItem {

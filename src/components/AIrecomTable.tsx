@@ -4,7 +4,7 @@ import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { deleteItem } from '@/lib/items/delete';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
-import { useGetAll } from './useGetAll';
+import { useGetAll } from '../hooks/useGetAll';
 
 // Interface for AI recommendations data
 interface AIRecommendations {
