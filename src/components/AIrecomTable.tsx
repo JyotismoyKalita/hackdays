@@ -1,8 +1,16 @@
-//for Airecomtable
+'use client';
 import React from 'react';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { Button } from '@/components/ui/button'; // Importing ShadCN Button
+import { Button } from '@/components/ui/button';
+import { getAll } from '@/lib/getAll';
+import { useQuery } from '@tanstack/react-query';
 
+// Interface for AI recommendations data
+interface AIRecommendations {
+    [category: string]: string[];
+}
+
+// Fallback data if needed
 const stockLevels = [
     {
         category: 'Category 1',
@@ -15,6 +23,46 @@ const stockLevels = [
 ];
 
 export function TableDemo() {
+    const {
+        data: allData,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['allData'],
+        queryFn: async () => {
+            const response = await getAll();
+            return response;
+        },
+    });
+
+    const aiRecommendations = allData?.get('aiRecommendations') as
+        | AIRecommendations
+        | undefined;
+
+    // Format recommendations for rendering
+    const recommendationCategories = React.useMemo(() => {
+        if (!aiRecommendations) return [];
+
+        return Object.entries(aiRecommendations).map(([category, items]) => ({
+            category,
+            items,
+        }));
+    }, [aiRecommendations]);
+
+    if (isLoading) {
+        return (
+            <div className="text-center p-6">Loading recommendations...</div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-center p-6 text-red-500">
+                Error loading recommendations
+            </div>
+        );
+    }
+
     return (
         <div className="flex justify-between gap-6 max-w-6xl w-full mx-auto overflow-hidden">
             {/* Table 1 - AI Recommended Products */}
@@ -24,29 +72,40 @@ export function TableDemo() {
                 </h2>
                 <Table className="w-full border-collapse">
                     <TableBody>
-                        {stockLevels.map((category) => (
-                            <React.Fragment key={category.category}>
-                                <TableRow className="bg-gray-800">
-                                    <TableCell
-                                        colSpan={2}
-                                        className="font-bold text-xl py-3 text-teal-600"
-                                    >
-                                        {category.category}
-                                    </TableCell>
-                                </TableRow>
-
-                                {category.items.map((item, index) => (
-                                    <TableRow
-                                        key={index}
-                                        className="border-t text-lg"
-                                    >
-                                        <TableCell className="font-medium">
-                                            • {item}
+                        {recommendationCategories.length > 0 ? (
+                            recommendationCategories.map((category) => (
+                                <React.Fragment key={category.category}>
+                                    <TableRow className="bg-gray-800">
+                                        <TableCell
+                                            colSpan={2}
+                                            className="font-bold text-xl py-3 text-teal-600"
+                                        >
+                                            {category.category}
                                         </TableCell>
                                     </TableRow>
-                                ))}
-                            </React.Fragment>
-                        ))}
+
+                                    {category.items.map((item, index) => (
+                                        <TableRow
+                                            key={index}
+                                            className="border-t text-lg"
+                                        >
+                                            <TableCell className="font-medium">
+                                                • {item}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </React.Fragment>
+                            ))
+                        ) : (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={2}
+                                    className="text-center py-6"
+                                >
+                                    No recommendations available
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>
