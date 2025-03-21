@@ -23,6 +23,8 @@ interface NewItemData {
 export default function Inventory() {
     const queryClient = useQueryClient();
 
+    const [selectItems, setSelectItems] = useState<userItems[]>([]);
+
     // Fetch items using React Query
     const { data: fetchedItems = [], isLoading, error } = useGetAllItems();
 
@@ -64,6 +66,7 @@ export default function Inventory() {
 
     const [hasExpiry, setHasExpiry] = useState(false);
     const [dates, setDates] = useState({ manufacturing: '', expiry: '' });
+    const [batchQty, setBatchQty] = useState(0);
 
     // Use mutation for adding items with proper typing
     const addItemMutation = useMutation({
@@ -184,6 +187,30 @@ export default function Inventory() {
         });
     };
 
+    const batchRestock = () => {
+        selectItems.forEach((itemId) => {
+            restockItemMutation.mutate({
+                id: itemId.id,
+                quantity: batchQty,
+            });
+        });
+    };
+
+    const batchSell = () => {
+        selectItems.forEach((item) => {
+            sellItemMutation.mutate({
+                id: item.id,
+                quantity: item.quantity,
+                stockAmounts: batchQty,
+            });
+        });
+    };
+
+    const batchRemove = () => {
+        selectItems.forEach((item) => {
+            removeItemMutation.mutate(item.id);
+        });
+    };
     return (
         <div className="flex w-full h-full bg-black text-white p-4">
             <div className="w-full max-w-screen-xl p-6 shadow-lg bg-black-900 flex flex-col">
@@ -207,131 +234,255 @@ export default function Inventory() {
                         )}
 
                         {(!isLoading || cachedItems.length > 0) && !error && (
-                            <div className="w-full overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
-                                    <thead>
-                                        <tr className="border-b border-gray-600">
-                                            <th className="p-3 text-teal-600">
-                                                Category
-                                            </th>
-                                            <th className="p-3">Item</th>
-                                            <th className="p-3">Stock</th>
-                                            <th className="p-3">Price</th>
-                                            <th className="p-3">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {items.length === 0 ? (
-                                            <tr>
-                                                <td
-                                                    colSpan={5}
-                                                    className="p-3 text-center"
-                                                >
-                                                    No items found
-                                                </td>
+                            <>
+                                <div className="w-full overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="border-b border-gray-600">
+                                                <th className="p-3 text-teal-600">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={
+                                                            selectItems.length ===
+                                                            items.length
+                                                        }
+                                                        onChange={() => {
+                                                            if (
+                                                                selectItems.length >=
+                                                                0
+                                                            ) {
+                                                                setSelectItems([
+                                                                    ...items.map(
+                                                                        (
+                                                                            item: userItems
+                                                                        ) =>
+                                                                            item
+                                                                    ),
+                                                                ]);
+                                                            }
+                                                            if (
+                                                                selectItems.length ==
+                                                                items.length
+                                                            ) {
+                                                                setSelectItems(
+                                                                    []
+                                                                );
+                                                            }
+                                                        }}
+                                                    />
+                                                </th>
+                                                <th className="p-3 text-teal-600">
+                                                    Category
+                                                </th>
+                                                <th className="p-3">Item</th>
+                                                <th className="p-3">Stock</th>
+                                                <th className="p-3">Price</th>
+                                                <th className="p-3">Actions</th>
                                             </tr>
-                                        ) : (
-                                            items.map((item: userItems) => (
-                                                <tr
-                                                    key={item.id}
-                                                    className="border-b border-gray-700"
-                                                >
-                                                    <td className="p-3 text-teal-600">
-                                                        {item.category}
-                                                    </td>
-                                                    <td className="p-3">
-                                                        {item.name}
-                                                    </td>
-                                                    <td className="p-3">
-                                                        {item.quantity}
-                                                    </td>
-                                                    <td className="p-3">
-                                                        ₹{item.price.toFixed(2)}
-                                                    </td>
-                                                    <td className="p-3 flex gap-2">
-                                                        <Input
-                                                            type="number"
-                                                            placeholder="Qty"
-                                                            value={
-                                                                stockAmounts[
-                                                                    item.id
-                                                                ] || ''
-                                                            }
-                                                            className="w-20 text-white"
-                                                            onChange={(e) =>
-                                                                setStockAmounts(
-                                                                    {
-                                                                        ...stockAmounts,
-                                                                        [item.id]:
-                                                                            e
-                                                                                .target
-                                                                                .value,
-                                                                    }
-                                                                )
-                                                            }
-                                                        />
-                                                        <Button
-                                                            disabled={
-                                                                restockItemMutation.isPending
-                                                            }
-                                                            onClick={() =>
-                                                                restock(
-                                                                    item,
-                                                                    parseInt(
-                                                                        stockAmounts[
-                                                                            item
-                                                                                .id
-                                                                        ] || '0'
-                                                                    ) || 0
-                                                                )
-                                                            }
-                                                            className="bg-blue-500 hover:bg-blue-600 w-24"
-                                                        >
-                                                            Restock
-                                                        </Button>
-                                                        <Button
-                                                            disabled={
-                                                                sellItemMutation.isPending
-                                                            }
-                                                            onClick={() =>
-                                                                sell(
-                                                                    item,
-                                                                    parseInt(
-                                                                        stockAmounts[
-                                                                            item
-                                                                                .id
-                                                                        ] || '0'
-                                                                    ) || 0
-                                                                )
-                                                            }
-                                                            className="bg-yellow-500 hover:bg-yellow-600 w-24"
-                                                        >
-                                                            Sell
-                                                        </Button>
-                                                        <Button
-                                                            onClick={() =>
-                                                                removeItem(
-                                                                    item.id
-                                                                )
-                                                            }
-                                                            className="bg-red-500 hover:bg-red-600 w-24"
-                                                            disabled={
-                                                                removeItemMutation.isPending
-                                                            }
-                                                        >
-                                                            {removeItemMutation.isPending &&
-                                                            removingItemId ===
-                                                                item.id
-                                                                ? 'Removing...'
-                                                                : 'Remove'}
-                                                        </Button>
+                                        </thead>
+                                        <tbody>
+                                            {items.length === 0 ? (
+                                                <tr>
+                                                    <td
+                                                        colSpan={5}
+                                                        className="p-3 text-center"
+                                                    >
+                                                        No items found
                                                     </td>
                                                 </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
+                                            ) : (
+                                                items.map((item: userItems) => (
+                                                    <>
+                                                        <tr
+                                                            key={item.id}
+                                                            className="border-b border-gray-700"
+                                                        >
+                                                            <td className="p-3">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={selectItems.includes(
+                                                                        item
+                                                                    )}
+                                                                    onChange={(
+                                                                        e
+                                                                    ) => {
+                                                                        if (
+                                                                            e
+                                                                                .target
+                                                                                .checked
+                                                                        ) {
+                                                                            setSelectItems(
+                                                                                [
+                                                                                    ...selectItems,
+                                                                                    item,
+                                                                                ]
+                                                                            );
+                                                                        } else {
+                                                                            setSelectItems(
+                                                                                selectItems.filter(
+                                                                                    (
+                                                                                        selectedItem
+                                                                                    ) =>
+                                                                                        selectedItem.id !==
+                                                                                        item.id
+                                                                                )
+                                                                            );
+                                                                        }
+                                                                    }}
+                                                                />
+                                                            </td>
+                                                            <td className="p-3 text-teal-600">
+                                                                {item.category}
+                                                            </td>
+                                                            <td className="p-3">
+                                                                {item.name}
+                                                            </td>
+                                                            <td className="p-3">
+                                                                {item.quantity}
+                                                            </td>
+                                                            <td className="p-3">
+                                                                ₹
+                                                                {item.price.toFixed(
+                                                                    2
+                                                                )}
+                                                            </td>
+                                                            <td className="p-3 flex gap-2">
+                                                                <Input
+                                                                    type="number"
+                                                                    placeholder="Qty"
+                                                                    value={
+                                                                        stockAmounts[
+                                                                            item
+                                                                                .id
+                                                                        ] || ''
+                                                                    }
+                                                                    className="w-20 text-white"
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        setStockAmounts(
+                                                                            {
+                                                                                ...stockAmounts,
+                                                                                [item.id]:
+                                                                                    e
+                                                                                        .target
+                                                                                        .value,
+                                                                            }
+                                                                        )
+                                                                    }
+                                                                />
+                                                                <Button
+                                                                    disabled={
+                                                                        restockItemMutation.isPending
+                                                                    }
+                                                                    onClick={() =>
+                                                                        restock(
+                                                                            item,
+                                                                            parseInt(
+                                                                                stockAmounts[
+                                                                                    item
+                                                                                        .id
+                                                                                ] ||
+                                                                                    '0'
+                                                                            ) ||
+                                                                                0
+                                                                        )
+                                                                    }
+                                                                    className="bg-blue-500 hover:bg-blue-600 w-24"
+                                                                >
+                                                                    Restock
+                                                                </Button>
+                                                                <Button
+                                                                    disabled={
+                                                                        sellItemMutation.isPending
+                                                                    }
+                                                                    onClick={() =>
+                                                                        sell(
+                                                                            item,
+                                                                            parseInt(
+                                                                                stockAmounts[
+                                                                                    item
+                                                                                        .id
+                                                                                ] ||
+                                                                                    '0'
+                                                                            ) ||
+                                                                                0
+                                                                        )
+                                                                    }
+                                                                    className="bg-yellow-500 hover:bg-yellow-600 w-24"
+                                                                >
+                                                                    Sell
+                                                                </Button>
+                                                                <Button
+                                                                    onClick={() =>
+                                                                        removeItem(
+                                                                            item.id
+                                                                        )
+                                                                    }
+                                                                    className="bg-red-500 hover:bg-red-600 w-24"
+                                                                    disabled={
+                                                                        removeItemMutation.isPending
+                                                                    }
+                                                                >
+                                                                    {removeItemMutation.isPending &&
+                                                                    removingItemId ===
+                                                                        item.id
+                                                                        ? 'Removing...'
+                                                                        : 'Remove'}
+                                                                </Button>
+                                                            </td>
+                                                        </tr>
+                                                    </>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {selectItems.length > 0 && (
+                                    <div className="items-center justify-center flex gap-2 mt-4">
+                                        <Input
+                                            type="number"
+                                            placeholder="Qty"
+                                            className="w-20 text-white"
+                                            value={
+                                                batchQty == 0 ? '' : batchQty
+                                            }
+                                            onChange={(e) =>
+                                                setBatchQty(
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
+                                        />
+                                        <Button
+                                            disabled={
+                                                restockItemMutation.isPending
+                                            }
+                                            onClick={batchRestock}
+                                            className="bg-blue-500 hover:bg-blue-600 w-24"
+                                        >
+                                            Restock
+                                        </Button>
+                                        <Button
+                                            disabled={
+                                                sellItemMutation.isPending
+                                            }
+                                            onClick={batchSell}
+                                            className="bg-yellow-500 hover:bg-yellow-600 w-24"
+                                        >
+                                            Sell
+                                        </Button>
+                                        <Button
+                                            className="bg-red-500 hover:bg-red-600 w-24"
+                                            onClick={batchRemove}
+                                            disabled={
+                                                removeItemMutation.isPending
+                                            }
+                                        >
+                                            Remove
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
 
