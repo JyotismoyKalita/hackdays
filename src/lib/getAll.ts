@@ -137,7 +137,7 @@ export async function getAll() {
     ${JSON.stringify(filteredSalesData)} 
     and Purchase Data: 
     ${JSON.stringify(filteredPurchaseData)}, 
-    Considering their demand, date left to expire(if any), location(India), trend, season and how long since purchase they have not been sold, recommend me what items should i discontinue(only consider the extreme case).
+    Considering their demand, date left to expire(if any), location(India), trend, season and how long since purchase they have not been sold, recommend me what items should i discontinue only and only if the item sells very very very less.
     The output must be in a parseable object-array-object {Category: [{Item,id},{Item,id},...], Category: [{...}, {...},...]} format.
     As this is a request made from api, give only the json data else the program will break`;
 
