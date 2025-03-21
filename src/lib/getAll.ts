@@ -115,7 +115,7 @@ export async function getAll() {
     ${JSON.stringify(filteredSalesData)} 
     and Purchase Data: 
     ${JSON.stringify(filteredPurchaseData)}, 
-    Considering their price, cost price, demand, date left to expire(if any), season and how long since purchase they have not been sold, give me a new price (dynamic price).
+    Considering their price, cost price, demand, date left to expire(if any), season and how long since purchase they have not been sold, give me a new price (dynamic price) exclude dynamic pricing for items such as snacks, packaged food and other grocery items which don't need dynamic pricing.
     The output must be in a parseable object-array-object {Category: [{Item, Demand(HIGH/LOW), willExpireIn(give "-" if no expiry days, else give "X days), currentPrice, newPrice},{...},...], Category: [{...},{...},...],...} format.
     As this is a request made from api, give only the json data else the program will break`;
 
