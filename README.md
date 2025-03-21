@@ -56,6 +56,7 @@ Install the recommended extensions if you are Using VSCode:
 The following is an overview of the project structure:
 
 inventrack/
+
 ├── app/  
 │ ├── layout.tsx  
 │ ├── page.tsx  
