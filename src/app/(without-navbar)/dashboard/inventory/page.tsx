@@ -246,7 +246,7 @@ export default function Inventory() {
                                                         {item.quantity}
                                                     </td>
                                                     <td className="p-3">
-                                                        ${item.price.toFixed(2)}
+                                                        ₹{item.price.toFixed(2)}
                                                     </td>
                                                     <td className="p-3 flex gap-2">
                                                         <Input

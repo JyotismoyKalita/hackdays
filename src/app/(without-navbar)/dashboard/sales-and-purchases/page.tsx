@@ -291,7 +291,7 @@ export default function SalesPurchases() {
                                                     {item.name}
                                                 </td>
                                                 <td className="border p-2">
-                                                    ${item.price}
+                                                    ₹{item.price}
                                                 </td>
                                                 <td className="border p-2">
                                                     {item.date}
@@ -332,7 +332,7 @@ export default function SalesPurchases() {
                                                 {item.name}
                                             </td>
                                             <td className="border p-2">
-                                                ${item.price}
+                                                ₹{item.price}
                                             </td>
                                             <td className="border p-2">
                                                 {item.date}
@@ -397,7 +397,7 @@ export default function SalesPurchases() {
                                                     {item.name}
                                                 </td>
                                                 <td className="border p-2">
-                                                    ${item.price}
+                                                    ₹{item.price}
                                                 </td>
                                                 <td className="border p-2">
                                                     {item.date}
@@ -438,7 +438,7 @@ export default function SalesPurchases() {
                                                 {item.name}
                                             </td>
                                             <td className="border p-2">
-                                                ${item.price}
+                                                ₹{item.price}
                                             </td>
                                             <td className="border p-2">
                                                 {item.date}
@@ -455,9 +455,9 @@ export default function SalesPurchases() {
                 )}
             </div>
             <div className="col-span-2 flex justify-evenly gap-30 mt-6">
-                <div className="p-4 font-bold">Total Sales: ${totalSales}</div>
+                <div className="p-4 font-bold">Total Sales: ₹{totalSales}</div>
                 <div className="p-4 font-bold">
-                    Total Purchases: ${totalPurchases}
+                    Total Purchases: ₹{totalPurchases}
                 </div>
             </div>
         </div>
