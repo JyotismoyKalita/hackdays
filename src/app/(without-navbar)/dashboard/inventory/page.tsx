@@ -388,7 +388,7 @@ export default function Inventory() {
                                                                                 0
                                                                         )
                                                                     }
-                                                                    className="bg-blue-500 hover:bg-blue-600 w-24"
+                                                                    className="bg-blue-500 hover:bg-blue-600 w-16"
                                                                 >
                                                                     Restock
                                                                 </Button>
@@ -409,7 +409,7 @@ export default function Inventory() {
                                                                                 0
                                                                         )
                                                                     }
-                                                                    className="bg-yellow-500 hover:bg-yellow-600 w-24"
+                                                                    className="bg-yellow-500 hover:bg-yellow-600 w-16"
                                                                 >
                                                                     Sell
                                                                 </Button>
@@ -419,7 +419,7 @@ export default function Inventory() {
                                                                             item.id
                                                                         )
                                                                     }
-                                                                    className="bg-red-500 hover:bg-red-600 w-24"
+                                                                    className="bg-red-500 hover:bg-red-600 w-16"
                                                                     disabled={
                                                                         removeItemMutation.isPending
                                                                     }
@@ -458,7 +458,7 @@ export default function Inventory() {
                                                 restockItemMutation.isPending
                                             }
                                             onClick={batchRestock}
-                                            className="bg-blue-500 hover:bg-blue-600 w-24"
+                                            className="bg-blue-500 hover:bg-blue-600 w-16"
                                         >
                                             Restock
                                         </Button>
@@ -467,12 +467,12 @@ export default function Inventory() {
                                                 sellItemMutation.isPending
                                             }
                                             onClick={batchSell}
-                                            className="bg-yellow-500 hover:bg-yellow-600 w-24"
+                                            className="bg-yellow-500 hover:bg-yellow-600 w-16"
                                         >
                                             Sell
                                         </Button>
                                         <Button
-                                            className="bg-red-500 hover:bg-red-600 w-24"
+                                            className="bg-red-500 hover:bg-red-600 w-16"
                                             onClick={batchRemove}
                                             disabled={
                                                 removeItemMutation.isPending
