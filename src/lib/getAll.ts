@@ -126,7 +126,7 @@ export async function getAll() {
     ${JSON.stringify(filteredSalesData)} 
     and Purchase Data: 
     ${JSON.stringify(filteredPurchaseData)}, 
-    Considering demand and season, recommend me new trending/bestselling products(only for the provided categories) of specific brand and model, in India by searching the web.
+    Considering demand and season, recommend me new trending/bestselling products of specific brand(only for the provided categories), in India by searching the web.
     The output must be in a parseable object-array {Category: [Item,Item,...], Category: [Item, Item,...]} format.
     As this is a request made from api, give only the json data else the program will break`;
 
