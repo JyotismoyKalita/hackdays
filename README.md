@@ -52,28 +52,29 @@ Install the recommended extensions if you are Using VSCode:
 - [Tailwind CSS](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
 
 ### Project Structure
+
 The following is an overview of the project structure:
 
 inventrack/
-├── app/                # Application pages and components (Next.js App Router)
-│   ├── layout.tsx      # Root layout for the application
-│   ├── page.tsx        # Main page of the application
-│   └── ...             # Other pages and components
-├── public/             # Static assets (images, icons, etc.)
-├── styles/             # Global and component-specific styles
-│   ├── globals.css     # Global CSS styles
-│   └── ...             # Other CSS files
-├── components/         # Reusable React components
-├── lib/                # Utility functions and libraries
-├── hooks/              # Custom React hooks
-├── pages/              # API routes and legacy pages (if using Pages Router)
-├── .eslintrc.js        # ESLint configuration
-├── .prettierrc         # Prettier configuration
-├── tailwind.config.js  # Tailwind CSS configuration
-├── tsconfig.json       # TypeScript configuration
-├── package.json        # Project dependencies and scripts
-├── pnpm-lock.yaml      # Lockfile for pnpm
-└── README.md           # Project documentation
+├── app/  
+│ ├── layout.tsx  
+│ ├── page.tsx  
+│ └── ...  
+├── public/  
+├── styles/  
+│ ├── globals.css  
+│ └── ...  
+├── components/  
+├── lib/  
+├── hooks/  
+├── pages/  
+├── .eslintrc.js  
+├── .prettierrc  
+├── tailwind.config.js  
+├── tsconfig.json  
+├── package.json  
+├── pnpm-lock.yaml  
+└── README.md
 
 ### Contributing
 
