@@ -90,7 +90,31 @@ export default function Inventory() {
                 setHasExpiry(false);
             }
         },
-        onError: (error) => {
+        onMutate: async (itemData) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['items'] });
+
+            // Snapshot the previous value
+            const previousItems = queryClient.getQueryData(['items']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['items'], (old: userItems[] = []) => {
+                return [
+                    ...old,
+                    {
+                        ...itemData,
+                        id: Date.now(), // Temporary ID until server response
+                    },
+                ];
+            });
+
+            // Return a context object with the snapshotted value
+            return { previousItems };
+        },
+        onError: (error, variables, context) => {
+            if (context?.previousItems) {
+                queryClient.setQueryData(['items'], context.previousItems);
+            }
             console.error('Failed to add item:', error);
         },
     });
@@ -120,7 +144,26 @@ export default function Inventory() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
         },
-        onError: (error) => {
+        onMutate: async (itemId) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['items'] });
+
+            // Snapshot the previous value
+            const previousItems = queryClient.getQueryData(['items']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['items'], (old: userItems[] = []) => {
+                return old.filter((item) => item.id !== itemId);
+            });
+
+            // Return a context object with the snapshotted value
+            return { previousItems };
+        },
+        onError: (error, variables, context) => {
+            // If the mutation fails, use the context returned from onMutate to roll back
+            if (context?.previousItems) {
+                queryClient.setQueryData(['items'], context.previousItems);
+            }
             console.error('Failed to remove item:', error);
         },
     });
@@ -141,12 +184,35 @@ export default function Inventory() {
     const restockItemMutation = useMutation({
         mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
             axios.post(`/api/items/restock`, { itemId: id, amount: quantity }),
+        onMutate: async ({ id, quantity }) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['items'] });
+
+            // Snapshot the previous value
+            const previousItems = queryClient.getQueryData(['items']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['items'], (old: userItems[] = []) => {
+                return old.map((item) =>
+                    item.id === id
+                        ? { ...item, quantity: item.quantity + quantity }
+                        : item
+                );
+            });
+
+            // Return a context object with the snapshotted value
+            return { previousItems };
+        },
+        onError: (error, variables, context) => {
+            // If the mutation fails, use the context returned from onMutate to roll back
+            if (context?.previousItems) {
+                queryClient.setQueryData(['items'], context.previousItems);
+            }
+            console.error('Failed to update stock:', error);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
             setStockAmounts({});
-        },
-        onError: (error) => {
-            console.error('Failed to update stock:', error);
         },
     });
 
@@ -165,12 +231,41 @@ export default function Inventory() {
                 amount: stockAmounts,
                 quantity: quantity,
             }),
+        onMutate: async ({ id, stockAmounts }) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries({ queryKey: ['items'] });
+
+            // Snapshot the previous value
+            const previousItems = queryClient.getQueryData(['items']);
+
+            // Optimistically update to the new value
+            queryClient.setQueryData(['items'], (old: userItems[] = []) => {
+                return old.map((item) =>
+                    item.id === id
+                        ? {
+                              ...item,
+                              quantity: Math.max(
+                                  0,
+                                  item.quantity - stockAmounts
+                              ),
+                          }
+                        : item
+                );
+            });
+
+            // Return a context object with the snapshotted value
+            return { previousItems };
+        },
+        onError: (error, variables, context) => {
+            // If the mutation fails, use the context returned from onMutate to roll back
+            if (context?.previousItems) {
+                queryClient.setQueryData(['items'], context.previousItems);
+            }
+            console.error('Failed to update stock', error);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
             setStockAmounts({});
-        },
-        onError: (error) => {
-            console.error('Failed to update stock', error);
         },
     });
 
