@@ -75,7 +75,7 @@ export default function Inventory() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['items'] });
 
-            // Clear the form
+            // Clear the form completely
             setNewItem({
                 name: '',
                 category: '',
@@ -84,11 +84,12 @@ export default function Inventory() {
                 costPrice: '',
             });
 
-            // Reset expiry dates if needed
-            if (hasExpiry) {
-                setDates({ manufacturing: '', expiry: '' });
-                setHasExpiry(false);
-            }
+            // Reset expiry related states
+            setDates({ manufacturing: '', expiry: '' });
+            setHasExpiry(false);
+
+            // Reset batch quantity
+            setBatchQty(0);
         },
         onMutate: async (itemData) => {
             // Cancel any outgoing refetches
@@ -133,6 +134,16 @@ export default function Inventory() {
             };
 
             addItemMutation.mutate(itemForApi);
+
+            // Reset form state immediately for better user feedback
+            setNewItem({
+                name: '',
+                category: '',
+                stock: '',
+                price: '',
+                costPrice: '',
+            });
+            setDates({ manufacturing: '', expiry: '' });
             setHasExpiry(false);
         }
     };
@@ -697,11 +708,8 @@ export default function Inventory() {
                         <Button
                             onClick={addItem}
                             className="mt-5 w-full bg-green-500 hover:bg-green-600"
-                            disabled={addItemMutation.isPending}
                         >
-                            {addItemMutation.isPending
-                                ? 'Adding...'
-                                : 'Add Item'}
+                            Add Item
                         </Button>
                     </div>
                 </div>
